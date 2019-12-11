@@ -1,0 +1,2 @@
+FLASK_APP=wordslearning.py
+FLASK_DEBUG=1
