@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+
+    <h3>
+        {{ dictionary.dictionary_name }}
+        <button id="btn_edit" class="btn btn-link" onclick="showFunction();">Edit</button>
+    </h3>
+
+    <div id="edit_block" style="display:none" class="collapse">
+        <form class="form" action="" method="post" role="form">
+            {{ form.hidden_tag() }}
+            <input id="dictionary_name" name="dictionary_name" required="" type="text" value="">
+            {% for error in form.dictionary_name.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            <input id="save_dictionary" name="save_dictionary" type="submit" value="Save" class="btn btn-default">
+            <input id="btn_cancel" name="cancel" type="button" value="Cancel" class="btn btn-default" onclick="showFunction();">
+        </form>
+    </div>
+
+    {% if not words %}
+        <div class="list">
+            <p>Words list is empty</p>
+        </div>
+    {% endif %}
+    <div class="">
+        <form action="{{ url_for('main.addword', dictionary_id=dictionary.id) }}">
+            <input type="submit" name="addword" id="addword" value="Add word">
+        </form>
+    </div>
+    <div class="list">
+        {% for word in dictionary.words %}
+            <li>
+                <p><h4><a href="{{ url_for('main.word', word_id=word.id) }}">{{ word.spelling }}</a></h4></p>
+                <p>{{ word.definition }}</p>
+            </li>
+        {% endfor %}
+    </div>
+
+
+<script>
+    function showFunction() {
+        var edit_block = document.getElementById('edit_block');
+        var btn = document.getElementById('btn_edit');
+        var field = document.getElementById('dictionary_name');
+        field.value = {{ dictionary.dictionary_name|tojson}}
+        if (edit_block.style.display === "none") {
+            edit_block.style.display = "block";
+            btn.style.display = "none";
+        } else {
+            edit_block.style.display = "none";
+            btn.style.display = "inline";
+        }
+    }
+
+</script>
+
+
+{% endblock %}

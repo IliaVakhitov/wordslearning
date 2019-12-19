@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>Dictionaries</h1>
+
+    {% for dictionary in dictionaries %}
+        <p>
+            <form action="{{ url_for('main.dictionary', dictionary_id=dictionary.id) }}">
+                <input type="submit" value="{{ dictionary.dictionary_name }}" class="btn btn-default">
+            </form>
+        </p>
+    {% endfor %}
+
+{% endblock %}

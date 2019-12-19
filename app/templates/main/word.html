@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+
+    <h3>
+        {{ word.spelling }}
+        <button id="btn_edit" class="btn btn-link" onclick="showFunction();">Edit</button>
+    </h3>
+
+    <div id="edit_block" style="display:none" class="collapse">
+        <form class="form" action="" method="post" role="form">
+            {{ form.hidden_tag() }}
+            <input id="spelling" name="spelling" required="" type="text" value="">
+            {% for error in form.spelling.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            <input id="definition" name="definition" required="" type="text" value="">
+            {% for error in form.definition.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            <input id="save_word" name="save_word" type="submit" value="Save" class="btn btn-default">
+            <input id="btn_cancel" name="cancel" type="button" value="Cancel" class="btn btn-default" onclick="showFunction();">
+        </form>
+    </div>
+
+<script>
+    function showFunction() {
+        var edit_block = document.getElementById('edit_block');
+        var btn = document.getElementById('btn_edit');
+        var field = document.getElementById('spelling');
+        field.value = {{ word.spelling|tojson}}
+        field = document.getElementById('definition');
+        field.value = {{ word.definition|tojson}}
+        if (edit_block.style.display === "none") {
+            edit_block.style.display = "block";
+            btn.style.display = "none";
+        } else {
+            edit_block.style.display = "none";
+            btn.style.display = "inline";
+        }
+    }
+
+</script>
+
+
+{% endblock %}
