@@ -1,25 +1,38 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-
-    <h3>
-        {{ dictionary.dictionary_name }}
-        <button id="btn_edit" class="btn btn-link" onclick="showFunction();">Edit</button>
-    </h3>
+    <div id="dictionary_block" style="display:block">
+        <h3>
+            {{ dictionary.dictionary_name }}
+            <button id="btn_edit" class="btn btn-link" onclick="showFunction();">Edit</button>
+        </h3>
+        {% if dictionary.description %}
+            {{ dictionary.description }}
+        {% endif %}
+    </div>
 
     <div id="edit_block" style="display:none" class="collapse">
         <form class="form" action="" method="post" role="form">
             {{ form.hidden_tag() }}
-            <input id="dictionary_name" name="dictionary_name" required="" type="text" value="">
-            {% for error in form.dictionary_name.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
+            <p>
+                {{ form.dictionary_name.label }}<br>
+                <input id="dictionary_name" name="dictionary_name" required="" type="text" value="">
+                {% for error in form.dictionary_name.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.description.label }}<br>
+                <input id="description" name="description" type="text" value="">
+            </p>
+
             <input id="save_dictionary" name="save_dictionary" type="submit" value="Save" class="btn btn-default">
             <input id="btn_cancel" name="cancel" type="button" value="Cancel" class="btn btn-default" onclick="showFunction();">
         </form>
+        <br>
     </div>
 
-    {% if not words %}
+    {% if not dictionary.words %}
         <div class="list">
             <p>Words list is empty</p>
         </div>
@@ -42,15 +55,20 @@
 <script>
     function showFunction() {
         var edit_block = document.getElementById('edit_block');
+        var dict_block = document.getElementById('dictionary_block');
         var btn = document.getElementById('btn_edit');
         var field = document.getElementById('dictionary_name');
         field.value = {{ dictionary.dictionary_name|tojson}}
+        field = document.getElementById('description');
+        field.value = {{ dictionary.description|tojson}}
         if (edit_block.style.display === "none") {
             edit_block.style.display = "block";
             btn.style.display = "none";
+            dict_block.style.display = "none";
         } else {
             edit_block.style.display = "none";
             btn.style.display = "inline";
+            dict_block.style.display = "block";
         }
     }
 

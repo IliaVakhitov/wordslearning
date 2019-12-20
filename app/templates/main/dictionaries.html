@@ -3,6 +3,18 @@
 
 {% block app_content %}
     <h1>Dictionaries</h1>
+    <p><button id="btn_edit" class="btn btn-info" onclick="showFunction();">Add new</button></p>
+    <div id="edit_block" style="display:none" class="collapse">
+        <form class="form" action="" method="post" role="form">
+            {{ form.hidden_tag() }}
+            <input id="dictionary_name" name="dictionary_name" required="" type="text" value="">
+            {% for error in form.dictionary_name.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            <input id="save_dictionary" name="save_dictionary" type="submit" value="Save" class="btn btn-default">
+            <input id="btn_cancel" name="cancel" type="button" value="Cancel" class="btn btn-default" onclick="showFunction();">
+        </form>
+    </div>
 
     {% for dictionary in dictionaries %}
         <p>
@@ -11,5 +23,20 @@
             </form>
         </p>
     {% endfor %}
+
+<script>
+    function showFunction() {
+        var edit_block = document.getElementById('edit_block');
+        var btn = document.getElementById('btn_edit');
+        if (edit_block.style.display === "none") {
+            edit_block.style.display = "block";
+            btn.style.display = "none";
+        } else {
+            edit_block.style.display = "none";
+            btn.style.display = "inline";
+        }
+    }
+
+</script>
 
 {% endblock %}

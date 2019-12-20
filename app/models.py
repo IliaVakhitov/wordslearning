@@ -56,6 +56,7 @@ class Dictionary(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     dictionary_name = db.Column(db.String(128))
+    description = db.Column(db.String(128))
     user_id = db.Column(db.Integer, db.ForeignKey('db_users.id'))
     words = db.relationship('Word', backref='Dictionary',  lazy='dynamic')
 
