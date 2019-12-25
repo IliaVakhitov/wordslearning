@@ -3,18 +3,18 @@ from app import db
 
 synonyms = db.Table(
     'synonyms',
-    db.Column('word_id', db.Integer, db.ForeignKey('db_words.id')),
-    db.Column('synonym_id', db.Integer, db.ForeignKey('db_words.id'))
+    db.Column('word_id', db.Integer, db.ForeignKey('words.id')),
+    db.Column('synonym_id', db.Integer, db.ForeignKey('words.id'))
 )
 
 
 class Word(db.Model):
-    __tablename__ = 'db_words'
+    __tablename__ = 'words'
 
     id = db.Column(db.Integer, primary_key=True)
     spelling = db.Column(db.String(128))
     definition = db.Column(db.String(550))
-    dictionary_id = db.Column(db.Integer, db.ForeignKey('db_dictionaries.id'))
+    dictionary_id = db.Column(db.Integer, db.ForeignKey('dictionaries.id'))
     words_synonyms = db.relationship(
         'Word', secondary=synonyms,
         primaryjoin=(synonyms.c.word_id == id),
@@ -38,7 +38,7 @@ class Word(db.Model):
 
 
 class User(db.Model):
-    __tablename__ = 'db_users'
+    __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
@@ -52,12 +52,12 @@ class User(db.Model):
 
 
 class Dictionary(db.Model):
-    __tablename__ = 'db_dictionaries'
+    __tablename__ = 'dictionaries'
 
     id = db.Column(db.Integer, primary_key=True)
     dictionary_name = db.Column(db.String(128))
-    description = db.Column(db.String(128))
-    user_id = db.Column(db.Integer, db.ForeignKey('db_users.id'))
+    description = db.Column(db.String(250))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     words = db.relationship('Word', backref='Dictionary',  lazy='dynamic')
 
     def __repr__(self):

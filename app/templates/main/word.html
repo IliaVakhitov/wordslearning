@@ -1,60 +1,12 @@
 {% extends "base.html" %}
 
-{% import 'bootstrap/wtf.html' as wtf %}
-
 {% block app_content %}
-    <div id="word_block" style="display:block">
-        <h3>
-            {{ word.spelling }}
-            <button id="btn_edit" class="btn btn-link" onclick="showFunction();">Edit</button>
-        </h3>
-        {{ word.definition }}
-    </div>
-    <div id="edit_block" style="display:none">
-        <form class="form" action="" method="post" role="form">
-            {{ form.hidden_tag() }}
-            <p>
-                {{ form.spelling.label }}<br>
-                <input aria-label="Spelling" id="spelling" name="spelling" required="" type="text" value="">
-            </p>
-            {% for error in form.spelling.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-            <p>
-                {{ form.definition.label }}<br>
-                <input id="definition" name="definition" required="" type="text" value="">
-            </p>
-            {% for error in form.definition.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-            <p>
-                <input id="save_word" name="save_word" type="submit" value="Save" class="btn btn-default">
-                <input id="btn_cancel" name="cancel" type="button" value="Cancel" class="btn btn-default" onclick="showFunction();">
-            </p>
-        </form>
-    </div>
 
-<script>
-    function showFunction() {
-        var edit_block = document.getElementById('edit_block');
-        var word_block = document.getElementById('word_block');
-        var btn = document.getElementById('btn_edit');
-        var field = document.getElementById('spelling');
-        field.value = {{ word.spelling|tojson}}
-        field = document.getElementById('definition');
-        field.value = {{ word.definition|tojson}}
-        if (edit_block.style.display === "none") {
-            edit_block.style.display = "block";
-            btn.style.display = "none";
-            word_block.style.display = "none";
-        } else {
-            edit_block.style.display = "none";
-            btn.style.display = "inline";
-            word_block.style.display = "block";
-        }
-    }
+    <form action="{{ url_for('main.dictionary', dictionary_id=word.dictionary_id) }}">
+        <input type="submit" value="Back" class="btn btn-default">
+    </form>
 
-</script>
-
+    <h3>{{ word.spelling }}</h3>
+    {{ word.definition }}
 
 {% endblock %}

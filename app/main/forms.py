@@ -1,13 +1,13 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired, ValidationError
+from wtforms.validators import DataRequired, ValidationError, Length
 from app.models import Dictionary
 from flask import flash
 
 
 class EditDictionaryForm(FlaskForm):
     dictionary_name = StringField('Name', validators=[DataRequired()])
-    description = StringField('Description')
+    description = StringField('Description', validators=[Length(min=0, max=250)])
     submit = SubmitField('Save')
 
     def __init__(self, original_dictionary_name, original_description, *args, **kwargs):
