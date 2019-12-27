@@ -1,4 +1,4 @@
-from flask_login import login_required
+from flask_login import login_required, current_user
 from flask import render_template
 from flask import url_for
 from flask import request
@@ -15,27 +15,25 @@ from app import db
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def index():
-    return render_template('index.html',
-                           title='Home',
-                           username='Guest'
-)
+    return render_template('index.html', title='Home')
 
 
 @bp.route('/dictionaries', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def dictionaries():
     dictionary_form = EditDictionaryForm("", "")
     if dictionary_form.validate_on_submit():
         dictionary_name = dictionary_form.dictionary_name.data
         description = dictionary_form.description.data
-        dictionary = Dictionary(dictionary_name=dictionary_name, description=description)
+        dictionary = Dictionary(dictionary_name=dictionary_name, description=description, user_id=current_user.id)
         db.session.add(dictionary)
         db.session.commit()
-        flash('Dictionary saved!')
+        return redirect(url_for('main.edit_dictionary', dictionary_id=dictionary.id))
+        # flash('Dictionary saved!')
 
-    dictionaries = Dictionary.query.order_by('dictionary_name')
+    dictionaries = Dictionary.query.filter_by(user_id=current_user.id).order_by('dictionary_name')
     return render_template('main/dictionaries.html',
                            title='Dictionaries',
                            form=dictionary_form,
@@ -43,7 +41,7 @@ def dictionaries():
 
 
 @bp.route('/dictionary/<int:dictionary_id>')
-# @login_required
+@login_required
 def dictionary(dictionary_id):
     dictionary = Dictionary.query.filter_by(id=dictionary_id).first_or_404()
     return render_template('main/dictionary.html',
@@ -52,21 +50,29 @@ def dictionary(dictionary_id):
 
 
 @bp.route('/edit/dictionary/<int:dictionary_id>', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def edit_dictionary(dictionary_id):
     dictionary = Dictionary.query.filter_by(id=dictionary_id).first_or_404()
     dictionary_form = EditDictionaryForm(dictionary.dictionary_name, dictionary.description)
     if dictionary_form.validate_on_submit():
-        new_dictionary_name = dictionary_form.dictionary_name.data
-        new_description = dictionary_form.description.data
-        dictionary.dictionary_name = new_dictionary_name
-        dictionary.description = new_description
-        db.session.commit()
-        flash('Dictionary saved!')
-        return redirect(url_for('main.dictionary', dictionary_id=dictionary.id))
+        if "save_dictionary" in request.form:
+            new_dictionary_name = dictionary_form.dictionary_name.data
+            new_description = dictionary_form.description.data
+            dictionary.dictionary_name = new_dictionary_name
+            dictionary.description = new_description
+            db.session.commit()
+            flash('Dictionary saved!')
+            return redirect(url_for('main.edit_dictionary', dictionary_id=dictionary.id))
 
+        elif "cancel_edit" in request.form:
+            return redirect(url_for('main.dictionary', dictionary_id=dictionary.id))
+        elif "delete_dictionary" in request.form:
+            pass
+            # TODO ask to confirm
+            # TODO delete entry
     elif request.method == 'GET':
         dictionary_form.dictionary_name.data = dictionary.dictionary_name
+        dictionary_form.description.data = dictionary.description
 
     return render_template('main/edit_dictionary.html',
                            title=dictionary.dictionary_name,
@@ -75,7 +81,7 @@ def edit_dictionary(dictionary_id):
 
 
 @bp.route('/word/<int:word_id>')
-# @login_required
+@login_required
 def word(word_id):
     word = Word.query.filter_by(id=word_id).first_or_404()
     return render_template('main/word.html',

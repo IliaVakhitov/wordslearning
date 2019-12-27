@@ -4,11 +4,10 @@
     <div id="dictionary_block" style="display:block">
         <h3>
             <span id="current_name">{{ dictionary.dictionary_name }} </span>
-
-
         </h3>
         <span id="current_description">{% if dictionary.description %} {{ dictionary.description }} {% endif %}</span>
-        <form  action="{{ url_for('main.edit_dictionary', dictionary_id=dictionary.id) }}">
+        <br>
+        <form action="{{ url_for('main.edit_dictionary', dictionary_id=dictionary.id) }}">
             <input class="btn btn-info" type="submit" value="Edit">
         </form>
     </div>

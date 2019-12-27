@@ -19,7 +19,7 @@ class EditDictionaryForm(FlaskForm):
         if dictionary_name.data != self.original_dictionary_name:
             dictionary = Dictionary.query.filter_by(dictionary_name=self.dictionary_name.data).first()
             if dictionary is not None:
-                flash('Please use a different name!')
+                # flash('Please use a different name!')
                 raise ValidationError('Please use a different name!')
 
 

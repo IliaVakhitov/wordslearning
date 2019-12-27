@@ -1,5 +1,7 @@
 from app import db
-
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+from app import login
 
 synonyms = db.Table(
     'synonyms',
@@ -37,7 +39,7 @@ class Word(db.Model):
             self.words_synonyms.remove(word)
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -49,6 +51,18 @@ class User(db.Model):
 
     def __repr__(self):
         return f'<User {self.username}>'
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+    
+    def set_secret_answer(self, secret_answer):
+        self.secret_answer_hash = generate_password_hash(secret_answer)
+
+    def check_secret_question(self, secret_answer):
+        return check_password_hash(self.secret_answer_hash, secret_answer)
 
 
 class Dictionary(db.Model):
@@ -64,8 +78,6 @@ class Dictionary(db.Model):
         return f'{self.dictionary_name}'
 
 
-
-
-
-
-
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))

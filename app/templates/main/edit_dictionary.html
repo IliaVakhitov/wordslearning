@@ -2,41 +2,52 @@
 
 {% block app_content %}
 
-    <div id="edit_form" >
-        <form id="dictionary_form" class="form" action="" method="post" role="form">
+    <div id="dictionary_block" class="container">
+        <form id="dict_form" class="form" action="" method="post" role="form">
             {{ form.hidden_tag() }}
             <input id="save_dictionary"
                    name="save_dictionary"
-                   type="button"
+                   type="submit"
                    value="Save"
+                   class="btn btn-success"
+                   onclick="">
+
+            <input id="cancel"
+                   name="cancel_edit"
+                   type="submit"
+                   value="Cancel"
                    class="btn btn-default"
-                   onclick="check_dictionary_name(
-                    this.form.dictionary_name.value,
-                    this.form.description.value,
-                    '#msg')">
+                   onclick="">
+
+            <input id="delete_dictionary"
+                   name="delete_dictionary"
+                   type="submit"
+                   value="Delete"
+                   class="btn btn-danger"
+                   onclick="">
 
             <p>
-                {{ form.dictionary_name.label }}<br>
-                <input id="dictionary_name" name="dictionary_name" required="" type="text" value="">
+                <br>{{ form.dictionary_name.label }}
+                <input id="dictionary_name" name="dictionary_name" required="" type="text" value="{{ dictionary.dictionary_name }}">
                 <span id="msg"></span>
                 {% for error in form.dictionary_name.errors %}
                     <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
             </p>
             <p>
-                {{ form.description.label }}<br>
-                <input id="description" name="description" type="text" value="">
+                {{ form.description.label }}
+                <textarea id="description" name="description" class="form-control" rows="3">{{ dictionary.description }}</textarea>
             </p>
         </form>
-        <br>
-    </div>
 
+    </div>
+    <br>
     {% if dictionary.words.count() == 0 %}
         <div class="list">
             <p>Words list is empty</p>
         </div>
     {% endif %}
-
+    <br>
     <div class="list">
         {% for word in dictionary.words %}
             <li>
@@ -45,34 +56,5 @@
             </li>
         {% endfor %}
     </div>
-
-
-<script>
-     function check_dictionary_name(dictionary_name, description, destElem) {
-        var current_name = $('#current_name').text().trim();
-        var current_description = $('#current_description').text().trim();
-        if (current_name == dictionary_name.trim() && current_description == description.trim()) {
-            showFunction();
-            return;
-        };
-        if (current_description != description){
-            dictionary_submit();
-        };
-        $.post('/check_dictionary_name', {
-                dictionary_name: dictionary_name
-            }).done(function(response) {
-                if (response['name_available']) {
-                    dictionary_submit();
-                };
-            }).fail(function(errorThrown) {
-                $(destElem).text(errorThrown.statusText);
-        });
-    }
-    function dictionary_submit() {
-        $('#dictionary_form').submit();
-    };
-
-</script>
-
 
 {% endblock %}
