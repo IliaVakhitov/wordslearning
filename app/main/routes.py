@@ -54,6 +54,12 @@ def dictionary(dictionary_id):
 def edit_dictionary(dictionary_id):
     dictionary = Dictionary.query.filter_by(id=dictionary_id).first_or_404()
     dictionary_form = EditDictionaryForm(dictionary.dictionary_name, dictionary.description)
+
+    if "delete" in request.form:
+        db.session.delete(dictionary)
+        db.session.commit()
+        return redirect(url_for('main.dictionaries'))
+
     if dictionary_form.validate_on_submit():
         if "save_dictionary" in request.form:
             new_dictionary_name = dictionary_form.dictionary_name.data
@@ -66,10 +72,9 @@ def edit_dictionary(dictionary_id):
 
         elif "cancel_edit" in request.form:
             return redirect(url_for('main.dictionary', dictionary_id=dictionary.id))
-        elif "delete_dictionary" in request.form:
-            pass
-            # TODO ask to confirm
-            # TODO delete entry
+
+
+
     elif request.method == 'GET':
         dictionary_form.dictionary_name.data = dictionary.dictionary_name
         dictionary_form.description.data = dictionary.description

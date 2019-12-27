@@ -21,11 +21,30 @@
 
             <input id="delete_dictionary"
                    name="delete_dictionary"
-                   type="submit"
+                   type="button"
                    value="Delete"
                    class="btn btn-danger"
-                   onclick="">
+                   onclick="show_confirmation();">
 
+            <div id="edit_block" style="display:none">
+                <form id="dict_delete" class="form" action="" method="post" role="form">
+                    {{ form.hidden_tag() }}
+                    <p>
+                    <h4>Do you want to delete dictionary? Please confirm operation!</h4>
+                    </p>
+                    <input id="delete"
+                           name="delete"
+                           type="submit"
+                           value="Delete"
+                           class="btn btn-danger">
+                    <input id="btn_cancel"
+                           name="cancel"
+                           type="button"
+                           value="Cancel"
+                           class="btn btn-default"
+                           onclick="show_confirmation();">
+                </form>
+            </div>
             <p>
                 <br>{{ form.dictionary_name.label }}
                 <input id="dictionary_name" name="dictionary_name" required="" type="text" value="{{ dictionary.dictionary_name }}">
@@ -39,8 +58,8 @@
                 <textarea id="description" name="description" class="form-control" rows="3">{{ dictionary.description }}</textarea>
             </p>
         </form>
-
     </div>
+
     <br>
     {% if dictionary.words.count() == 0 %}
         <div class="list">
@@ -56,5 +75,19 @@
             </li>
         {% endfor %}
     </div>
+
+<script>
+    function show_confirmation() {
+        var edit_block = document.getElementById('edit_block');
+        var btn = document.getElementById('delete_dictionary');
+        if (edit_block.style.display === "none") {
+            edit_block.style.display = "block";
+            btn.style.display = "none";
+        } else {
+            edit_block.style.display = "none";
+            btn.style.display = "inline";
+        }
+    }
+</script>
 
 {% endblock %}

@@ -25,5 +25,3 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Please use a different username.')
 
 
-# TODO login after registration
-
