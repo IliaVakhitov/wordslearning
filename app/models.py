@@ -47,7 +47,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     secret_question = db.Column(db.String(128))
     secret_answer_hash = db.Column(db.String(128))
-    dictionaries = db.relationship('Dictionary', backref='Owner', lazy='dynamic')
+    dictionaries = db.relationship('Dictionary', backref='Owner', lazy='dynamic', order_by="Dictionary.id")
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -72,7 +72,7 @@ class Dictionary(db.Model):
     dictionary_name = db.Column(db.String(128))
     description = db.Column(db.String(250))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    words = db.relationship('Word', backref='Dictionary',  lazy='dynamic')
+    words = db.relationship('Word', backref='Dictionary',  lazy='dynamic', order_by="Word.id")
 
     def __repr__(self):
         return f'{self.dictionary_name}'

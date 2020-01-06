@@ -5,89 +5,112 @@
     <div id="dictionary_block" class="container">
         <form id="dict_form" class="form" action="" method="post" role="form">
             {{ form.hidden_tag() }}
-            <input id="save_dictionary"
-                   name="save_dictionary"
-                   type="submit"
-                   value="Save"
-                   class="btn btn-success"
-                   onclick="">
+            <div id="buttons_block">
+                <input id="save_dictionary"
+                       name="save_dictionary"
+                       type="submit"
+                       value="Save"
+                       class="btn btn-success"
+                       onclick="">
 
-            <input id="cancel"
-                   name="cancel_edit"
-                   type="submit"
-                   value="Cancel"
-                   class="btn btn-default"
-                   onclick="">
+                <input id="cancel"
+                       name="cancel_edit"
+                       type="submit"
+                       value="Cancel"
+                       class="btn btn-default"
+                       onclick="">
 
-            <input id="delete_dictionary"
-                   name="delete_dictionary"
-                   type="button"
-                   value="Delete"
-                   class="btn btn-danger"
-                   onclick="show_confirmation();">
-
-            <div id="edit_block" style="display:none">
-                <form id="dict_delete" class="form" action="" method="post" role="form">
-                    {{ form.hidden_tag() }}
-                    <p>
-                    <h4>Do you want to delete dictionary? Please confirm operation!</h4>
-                    </p>
-                    <input id="delete"
-                           name="delete"
-                           type="submit"
-                           value="Delete"
-                           class="btn btn-danger">
-                    <input id="btn_cancel"
-                           name="cancel"
-                           type="button"
-                           value="Cancel"
-                           class="btn btn-default"
-                           onclick="show_confirmation();">
-                </form>
+                <input id="delete_dictionary"
+                       name="delete_dictionary"
+                       type="button"
+                       value="Delete"
+                       class="btn btn-danger"
+                       onclick="show_confirmation();">
             </div>
-            <p>
-                <br>{{ form.dictionary_name.label }}
-                <input id="dictionary_name" name="dictionary_name" required="" type="text" value="{{ dictionary.dictionary_name }}">
-                <span id="msg"></span>
-                {% for error in form.dictionary_name.errors %}
-                    <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
-            </p>
-            <p>
-                {{ form.description.label }}
-                <textarea id="description" name="description" class="form-control" rows="3">{{ dictionary.description }}</textarea>
-            </p>
+            <div id="dictionary_name_description">
+                <p>
+                    <br>{{ form.dictionary_name.label }}
+                    <input id="dictionary_name" name="dictionary_name" required="" type="text" value="{{ dictionary.dictionary_name }}">
+                    <span id="msg"></span>
+                    <span id="dictionary_id" hidden="">{{ dictionary.id }}</span>
+                    {% for error in form.dictionary_name.errors %}
+                        <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.description.label }}
+                    <input id="description" name="description" class="form-control" rows="3" style="width:50%;" value="{{ dictionary.description }}">
+                </p>
+            </div>
         </form>
-    </div>
-
-    <br>
-    {% if dictionary.words.count() == 0 %}
-        <div class="list">
-            <p>Words list is empty</p>
+        <div id="delete_block" style="display:none">
+            <form id="dict_delete" class="form" action="" method="post" role="form">
+                {{ form.hidden_tag() }}
+                <p><h4>Do you want to delete dictionary? Please confirm operation!</h4></p>
+                <input id="delete"
+                       name="delete"
+                       type="submit"
+                       value="Delete"
+                       class="btn btn-danger">
+                <input id="btn_cancel"
+                       name="cancel"
+                       type="button"
+                       value="Cancel"
+                       class="btn btn-default"
+                       onclick="show_confirmation();">
+            </form>
         </div>
-    {% endif %}
-    <br>
-    <div class="list">
-        {% for word in dictionary.words %}
-            <li>
-                <p><h4><a href="{{ url_for('main.word', word_id=word.id) }}">{{ word.spelling }}</a></h4></p>
-                <p>{{ word.definition }}</p>
-            </li>
-        {% endfor %}
     </div>
 
-<script>
-    function show_confirmation() {
-        var edit_block = document.getElementById('edit_block');
-        var btn = document.getElementById('delete_dictionary');
-        if (edit_block.style.display === "none") {
-            edit_block.style.display = "block";
-            btn.style.display = "none";
-        } else {
-            edit_block.style.display = "none";
-            btn.style.display = "inline";
-        }
-    }
-</script>
+    <div id="words_block">
+        <br>
+        {% if dictionary.words.count() == 0 %}
+            <div>
+                <p>Words list is empty</p>
+            </div>
+        {% endif %}
+        <br>
+        <div id="new_word" style="width:50%; align:left">
+            <table class="table" id="words_table">
+                <thead class="thead-light">
+                    <tr>
+                        <th style="text-align:center;">Word or phrase</th>
+                        <th style="text-align:center;">Definition</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="words_table_body">
+                    <tr>
+                        <td>
+                            <input id="new_word_spelling" value="" size="25">
+                            <span id="spelling_msg" style="color:red"></span>
+                        </td>
+                        <td>
+                            <input id="new_word_definition" value="" size="35">
+                            <span id="definition_msg" style="color:red"></span>
+                        </td>
+                        <td><button id="add_button" class="btn btn-info" onclick="add_new_word();">Add</button></td>
+                    </tr>
+                    {% for word in dictionary.words %}
+                    <tr id="word_{{ word.id }}">
+                        <td><input id="word_spelling_{{ word.id }}"
+                                   value="{{ word.spelling }}"
+                                   onchange="save_word({{ word.id}});"
+                                   size="25"></td>
+                        <td><input id="word_definition_{{ word.id }}"
+                                   value="{{ word.definition }}"
+                                   onchange="save_word({{ word.id}});"
+                                   size="35"></td>
+                        <td><button id="button_delete_{{ word.id }}"
+                                    class="btn btn-danger"
+                                    onclick="delete_word({{ word.id }});">X</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<script type="text/javascript" src="{{ url_for('static', filename='edit_document.js') }}"></script>
 
 {% endblock %}
