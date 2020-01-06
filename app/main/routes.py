@@ -68,7 +68,7 @@ def edit_dictionary(dictionary_id):
             # TODO save words list
             db.session.commit()
             flash('Dictionary saved!')
-            return redirect(url_for('main.edit_dictionary', dictionary_id=dictionary_entry.id))
+            return redirect(url_for('main.dictionary', dictionary_id=dictionary_entry.id))
 
         elif "cancel_edit" in request.form:
             return redirect(url_for('main.dictionary', dictionary_id=dictionary_entry.id))

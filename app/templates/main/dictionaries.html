@@ -7,10 +7,7 @@
     <div id="edit_block" style="display:none" class="collapse">
         <form class="form" action="" method="post" role="form">
             {{ form.hidden_tag() }}
-            <input id="dictionary_name" name="dictionary_name" required="" type="text" value="">
-            {% for error in form.dictionary_name.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
+            <input id="dictionary_name" name="dictionary_name" required="" type="text" value="" placeholder="New dictionary label">
             <input id="save_dictionary" name="save_dictionary" type="submit" value="Save" class="btn btn-default">
             <input id="btn_cancel" name="cancel" type="button" value="Cancel" class="btn btn-default" onclick="showFunction();">
         </form>

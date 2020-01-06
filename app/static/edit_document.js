@@ -30,6 +30,8 @@ function add_word(word_id) {
     input_value.setAttribute('id', 'word_spelling_'.concat(word_id));
     input_value.setAttribute('value', new_word_spelling.value);
     input_value.setAttribute('size', 25);
+    input_value.setAttribute('required', '');
+    input_value.setAttribute('placeholder', 'Enter word or phrase');
     input_value.setAttribute('onchange', 'save_word(word_id)'.replace('word_id', word_id));
     td_spelling.appendChild(input_value);
 
@@ -37,6 +39,8 @@ function add_word(word_id) {
     input_definition.setAttribute('id', 'word_definition_'.concat(word_id));
     input_definition.setAttribute('value', new_word_definition.value);
     input_definition.setAttribute('size', 35);
+    input_definition.setAttribute('required', '');
+    input_definition.setAttribute('placeholder', 'Enter definition');
     input_definition.setAttribute('onchange', 'save_word(word_id)'.replace('word_id', word_id));
     td_definition.appendChild(input_definition);
 
@@ -53,6 +57,8 @@ function add_word(word_id) {
     tr.appendChild(td_button_delete);
 
     words_table.appendChild(tr);
+    new_word_spelling.value = '';
+    new_word_definition.value = '';
 }
 
 function delete_word(word_id) {
@@ -71,13 +77,15 @@ function add_new_word() {
     var spelling = document.getElementById('new_word_spelling').value.trim();
     var definition = document.getElementById('new_word_definition').value.trim();
     var dictionary_id = document.getElementById('dictionary_id').innerHTML;
+    document.getElementById('spelling_msg').innerHTML = "";
+    document.getElementById('definition_msg').innerHTML = "";
     if (spelling == "") {
-        spelling_msg = document.getElementById('spelling').innerHTML = "Please, fill this field!";
-        return
+        document.getElementById('spelling_msg').innerHTML = "Please fill out this field";
+        return;
     }
     if (definition == "") {
-        definition_msg = document.getElementById('definition_msg').innerHTML = "Please, fill this field!";
-        return
+        document.getElementById('definition_msg').innerHTML = "Please fill out this field";
+        return;
     }
     $.post('/add_word', {
         spelling: spelling,
