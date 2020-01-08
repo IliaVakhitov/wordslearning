@@ -3,28 +3,47 @@
 {% block app_content %}
     <div id="dictionary_block" style="display:block">
         <h3>
-            <span id="current_name">{{ dictionary.dictionary_name }} </span>
+            <p><span id="current_name">{{ dictionary.dictionary_name }} </span></p>
+
         </h3>
-        <span id="current_description">{% if dictionary.description %} {{ dictionary.description }} {% endif %}</span>
-        <br>
+        <p><span id="current_description">{% if dictionary.description %} {{ dictionary.description }} {% endif %}</span></p>
+
         <form action="{{ url_for('main.edit_dictionary', dictionary_id=dictionary.id) }}">
             <input class="btn btn-info" type="submit" value="Edit" >
         </form>
     </div>
-
+    <br>
     {% if dictionary.words.count() == 0 %}
         <div class="list">
             <p>Words list is empty</p>
         </div>
+
+    {% else %}
+        <div>
+            <table class="table table-bordered" id="words_table">
+                <thead class="thead thead-dark">
+                    <tr>
+                        <th style="text-align:left;width:30%">Phrase</th>
+                        <th style="text-align:left;width:60%">Definition</th>
+                        <th style="text-align:left;width:10%">Index</th>
+                    </tr>
+                </thead>
+                <tbody id="words_table_body">
+                {% for word in dictionary.words %}
+                    <tr>
+                        <td>{{ word.spelling }}</td>
+                        <td>{{ word.definition }}</td>
+                        <td>{% if (word.learning_index != None) and (word.learning_index.index > 0) %}
+                                {{ word.learning_index.index }}
+                            {% else %}
+                                0
+                            {% endif %}
+                            %
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% endif %}
-
-    <div class="list">
-        {% for word in dictionary.words %}
-            <li>
-                <p><h4><a href="{{ url_for('main.word', word_id=word.id) }}">{{ word.spelling }}</a></h4></p>
-                <p>{{ word.definition }}</p>
-            </li>
-        {% endfor %}
-    </div>
-
 {% endblock %}

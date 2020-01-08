@@ -10,6 +10,15 @@ synonyms = db.Table(
 )
 
 
+class LearningIndex(db.Model):
+    __tablename__ = 'learning_index'
+
+    id = db.Column(db.Integer, primary_key=True)
+    index = db.Column(db.Integer)
+    word_id = db.Column(db.Integer, db.ForeignKey('words.id'))
+    word = db.relationship('Word', back_populates='learning_index')
+
+
 class Word(db.Model):
     __tablename__ = 'words'
 
@@ -17,6 +26,7 @@ class Word(db.Model):
     spelling = db.Column(db.String(128))
     definition = db.Column(db.String(550))
     dictionary_id = db.Column(db.Integer, db.ForeignKey('dictionaries.id'))
+    learning_index = db.relationship('LearningIndex', uselist=False, back_populates='word')
     words_synonyms = db.relationship(
         'Word', secondary=synonyms,
         primaryjoin=(synonyms.c.word_id == id),

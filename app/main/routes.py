@@ -1,3 +1,4 @@
+import logging
 from flask_login import login_required, current_user
 from flask import render_template
 from flask import url_for
@@ -11,6 +12,8 @@ from app.main import bp
 from app.main.forms import EditDictionaryForm
 from app.main.forms import EditWordForm
 from app import db
+import logging
+
 
 
 @bp.route('/', methods=['GET', 'POST'])
@@ -26,11 +29,13 @@ def dictionaries():
     dictionary_form = EditDictionaryForm("", "")
     if dictionary_form.validate_on_submit():
         dictionary_entry = Dictionary(
-            dictionary_name=dictionary_form.dictionary_name.data,
-            description=dictionary_form.description.data,
+            dictionary_name=dictionary_form.dictionary_name.data.strip(),
+            description=dictionary_form.description.data.strip(),
             user_id=current_user.id)
         db.session.add(dictionary_entry)
         db.session.commit()
+        # TODO add logging
+        logger.info(f'Dictionary {dictionary_entry.dictionary_name} saved')
         return redirect(url_for('main.edit_dictionary', dictionary_id=dictionary_entry.id))
         # flash('Dictionary saved!')
 
@@ -102,8 +107,8 @@ def check_dictionary_name():
 @bp.route('/add_word', methods=['POST'])
 def add_word():
     new_word = Word(
-        spelling=request.form['spelling'],
-        definition=request.form['definition'],
+        spelling=request.form['spelling'].strip(),
+        definition=request.form['definition'].strip(),
         dictionary_id=request.form['dictionary_id'])
     db.session.add(new_word)
     db.session.commit()
@@ -123,12 +128,11 @@ def delete_word():
 @bp.route('/save_word', methods=['POST'])
 def save_word():
     word_entry = Word.query.filter_by(id=request.form['word_id']).first_or_404()
-    word_entry.spelling = request.form['spelling']
-    word_entry.definition = request.form['definition']
+    word_entry.spelling = request.form['spelling'].strip()
+    word_entry.definition = request.form['definition'].strip()
     db.session.commit()
 
     return jsonify({'success': True})
 
 
-
-
+logger = logging.getLogger(__name__)

@@ -92,11 +92,11 @@
                 <tbody id="words_table_body">
                     <tr>
                         <td>
-                            <input id="new_word_spelling" value="" size="25" placeholder="Enter word or phrase">
+                            <input id="new_word_spelling" value="" size="40" placeholder="Enter word or phrase">
                             <span id="spelling_msg" style="color:red"></span>
                         </td>
                         <td>
-                            <input id="new_word_definition" value="" size="35" placeholder="Enter definition">
+                            <input id="new_word_definition" value="" size="55" placeholder="Enter definition">
                             <span id="definition_msg" style="color:red"></span>
                         </td>
                         <td><button id="add_button" class="btn btn-info" onclick="add_new_word();">Add</button></td>
@@ -107,12 +107,12 @@
                                    value="{{ word.spelling }}"
                                    required=""
                                    onchange="save_word({{ word.id}});"
-                                   size="25"></td>
+                                   size="40"></td>
                         <td><input id="word_definition_{{ word.id }}"
                                    value="{{ word.definition }}"
                                    required=""
                                    onchange="save_word({{ word.id}});"
-                                   size="35"></td>
+                                   size="55"></td>
                         <td><button id="button_delete_{{ word.id }}"
                                     class="btn btn-danger"
                                     onclick="delete_word({{ word.id }});">X</button></td>

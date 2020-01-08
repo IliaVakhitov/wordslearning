@@ -56,5 +56,8 @@ def create_app(config_class=Config):
     return app
 
 
+def logger(self):
+    return self._logger
+
 from app import models
 
