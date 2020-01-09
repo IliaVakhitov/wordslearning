@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
 
@@ -7,13 +6,13 @@
 
     <div>
         <form action="{{ url_for('main.dictionaries') }}">
-            <input type="submit" value="Dictionaries" class="btn btn-default">
+            <input type="submit" value="Dictionaries" class="btn btn-outline-dark btn-sm">
         </form>
     </div>
     <br>
     <div>
         <form action="{{ url_for('main.games') }}">
-            <input type="submit" value="Games" class="btn btn-default">
+            <input type="submit" value="Games" class="btn btn-outline-dark btn-sm">
         </form>
     </div>
 

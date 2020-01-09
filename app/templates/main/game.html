@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block app_script %}
+    <script type="text/javascript" src="{{ url_for('static', filename='game.js') }}"></script>
+{% endblock %}
+
+{% block app_content %}
+
+    <h1>{{ game_type }}</h1>
+
+    <p id="word_value">Value</p>
+    <table style="width:150px">
+        <tr >
+            <td style="width:55px"><input type="button" name="answer" id="answer1" class="btn btn-outline-dark btn-sm" value="Answer 1" size="25"></td>
+            <td><input type="button" name="answer" id="answer2" class="btn btn-outline-dark btn-sm" value="Answer 2"></td>
+        </tr>
+        <tr>
+            <td><input type="button" name="answer" id="answer3" class="btn btn-outline-dark btn-sm" value="Answer 3"></td>
+            <td><input type="button" name="answer" id="answer4" class="btn btn-outline-dark btn-sm" value="Answer 4"></td>
+        </tr>
+    </table>
+
+
+{% endblock %}
+

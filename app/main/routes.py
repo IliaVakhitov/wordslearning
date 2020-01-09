@@ -25,7 +25,7 @@ def index():
 @bp.route('/dictionaries', methods=['GET', 'POST'])
 @login_required
 def dictionaries():
-    dictionary_form = EditDictionaryForm("", "")
+    dictionary_form = EditDictionaryForm('', '')
     if dictionary_form.validate_on_submit():
         dictionary_entry = Dictionary(
             dictionary_name=dictionary_form.dictionary_name.data.strip(),
@@ -60,13 +60,13 @@ def edit_dictionary(dictionary_id):
     dictionary_entry = Dictionary.query.filter_by(id=dictionary_id).first_or_404()
     dictionary_form = EditDictionaryForm(dictionary_entry.dictionary_name, dictionary_entry.description)
 
-    if "delete" in request.form:
+    if 'delete' in request.form:
         db.session.delete(dictionary_entry)
         db.session.commit()
         return redirect(url_for('main.dictionaries'))
 
     if dictionary_form.validate_on_submit():
-        if "save_dictionary" in request.form:
+        if 'save_dictionary' in request.form:
             dictionary_entry.dictionary_name = dictionary_form.dictionary_name.data.strip()
             dictionary_entry.description = dictionary_form.description.data.strip()
             # TODO save words list
@@ -74,7 +74,7 @@ def edit_dictionary(dictionary_id):
             flash('Dictionary saved!')
             return redirect(url_for('main.dictionary', dictionary_id=dictionary_entry.id))
 
-        elif "cancel_edit" in request.form:
+        elif 'cancel_edit' in request.form:
             return redirect(url_for('main.dictionary', dictionary_id=dictionary_entry.id))
 
     if request.method == 'GET':
@@ -134,10 +134,30 @@ def save_word():
     return jsonify({'success': True})
 
 
-@bp.route('/games')
+@bp.route('/games', methods=['GET', 'POST'])
 @login_required
 def games():
-    return render_template('main/games.html', title='Games')
+    if request.method == 'GET':
+        return render_template('main/games.html', title='Games')
 
+    game_type = 'Find definition'
+    if 'find_spelling' in request.form:
+        game_type = 'Find spelling'
+
+    return redirect(url_for('main.game', game_type=game_type))
+
+
+@bp.route('/game', methods=['GET', 'POST'])
+@login_required
+def game():
+    game_type = request.args['game_type']
+
+    if request.method == 'GET':
+        return render_template('main/game.html', title='Game', game_type=game_type)
+
+    if request.method == 'POST':
+        # End of a game
+        pass
 
 logger = logging.getLogger(__name__)
+

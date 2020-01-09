@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block app_script %}
+    <script type="text/javascript" src="{{ url_for('static', filename='edit_document.js') }}"></script>
+{% endblock %}
+
 {% block app_content %}
     <div id="dictionary_block" class="container">
         <form id="dict_form" action="" method="post" role="form" class="form">
@@ -9,21 +13,21 @@
                        name="save_dictionary"
                        type="submit"
                        value="Save"
-                       class="btn btn-success"
+                       class="btn btn-outline-success btn-sm"
                        onclick="">
 
                 <input id="cancel"
                        name="cancel_edit"
                        type="submit"
                        value="Cancel"
-                       class="btn btn-default"
+                       class="btn btn-outline-dark btn-sm"
                        onclick="">
 
                 <input id="delete_dictionary"
                        name="delete_dictionary"
                        type="button"
                        value="Delete"
-                       class="btn btn-danger"
+                       class="btn btn-outline-danger btn-sm"
                        onclick="show_confirmation();">
             </div>
             <div id="dictionary_name_description" style="width:70%">
@@ -61,12 +65,12 @@
                        name="delete"
                        type="submit"
                        value="Delete"
-                       class="btn btn-danger">
+                       class="btn btn-outline-danger btn-sm">
                 <input id="btn_cancel"
                        name="cancel"
                        type="button"
                        value="Cancel"
-                       class="btn btn-default"
+                       class="btn btn-outline-dark btn-sm"
                        onclick="show_confirmation();">
             </form>
         </div>
@@ -99,7 +103,7 @@
                             <input id="new_word_definition" value="" size="55" placeholder="Enter definition">
                             <span id="definition_msg" style="color:red"></span>
                         </td>
-                        <td><button id="add_button" class="btn btn-info" onclick="add_new_word();">Add</button></td>
+                        <td><button id="add_button" class="btn btn-outline-info" onclick="add_new_word();">Add</button></td>
                     </tr>
                     {% for word in dictionary.words %}
                     <tr id="word_{{ word.id }}">
@@ -114,7 +118,7 @@
                                    onchange="save_word({{ word.id}});"
                                    size="55"></td>
                         <td><button id="button_delete_{{ word.id }}"
-                                    class="btn btn-danger"
+                                    class="btn btn-outline-danger btn-sm"
                                     onclick="delete_word({{ word.id }});">X</button></td>
                     </tr>
                     {% endfor %}
@@ -123,6 +127,5 @@
         </div>
     </div>
 
-<script type="text/javascript" src="{{ url_for('static', filename='edit_document.js') }}"></script>
 
 {% endblock %}

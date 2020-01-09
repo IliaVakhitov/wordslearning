@@ -1,5 +1,19 @@
 {% extends "base.html" %}
 
 {% block app_content %}
+
     <h1>Games page</h1>
+
+    <div>
+        <form action="{{ url_for('main.games') }}" method="post" role="form">
+            <input type="submit" name="find_definition" value="Find definition" class="btn btn-outline-dark btn-sm">
+        </form>
+    </div>
+    <br>
+    <div>
+        <form action="{{ url_for('main.games') }}" method="post" role="form">
+            <input type="submit" name="find_spelling" value="Find spelling" class="btn btn-outline-dark btn-sm">
+        </form>
+    </div>
+
 {% endblock %}
