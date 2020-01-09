@@ -51,13 +51,10 @@ def create_app(config_class=Config):
     app.logger.addHandler(file_handler)
 
     app.logger.setLevel(logging.INFO)
-    app.logger.info('Words learning startup')
+    # app.logger.info('Words learning startup')
 
     return app
 
-
-def logger(self):
-    return self._logger
 
 from app import models
 

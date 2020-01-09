@@ -15,9 +15,8 @@ from app import db
 import logging
 
 
-
-@bp.route('/', methods=['GET', 'POST'])
-@bp.route('/index', methods=['GET', 'POST'])
+@bp.route('/')
+@bp.route('/index')
 @login_required
 def index():
     return render_template('index.html', title='Home')
@@ -133,6 +132,12 @@ def save_word():
     db.session.commit()
 
     return jsonify({'success': True})
+
+
+@bp.route('/games')
+@login_required
+def games():
+    return render_template('main/games.html', title='Games')
 
 
 logger = logging.getLogger(__name__)
