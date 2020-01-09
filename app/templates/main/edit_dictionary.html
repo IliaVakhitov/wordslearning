@@ -5,7 +5,8 @@
 {% endblock %}
 
 {% block app_content %}
-    <div id="dictionary_block" class="container">
+    <br>
+    <div id="dictionary_block">
         <form id="dict_form" action="" method="post" role="form" class="form">
             {{ form.hidden_tag() }}
             <div id="buttons_block">
@@ -30,12 +31,14 @@
                        class="btn btn-outline-danger btn-sm"
                        onclick="show_confirmation();">
             </div>
-            <div id="dictionary_name_description" style="width:70%">
+            <div id="dictionary_name_description" style="width:80%">
                 <br>
-                    <div class="input-group">
-                        <span class="input-group-addon">Name</span>
+                    <div class="input-group mb-3 input-group-sm">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Name</span>
+                        </div>
                         <input id="dictionary_name"
-                               class="form-control"
+                               class="form-control form-control-sm"
                                name="dictionary_name"
                                required=""
                                type="text"
@@ -47,11 +50,13 @@
                         <span style="color: red;">[{{ error }}]</span>
                     {% endfor %}
                 <p>
-                    <div class="input-group">
-                        <span class="input-group-addon">Description</span>
+                    <div class="input-group mb-3 input-group-sm">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Description</span>
+                        </div>
                         <input id="description"
                                name="description"
-                               class="form-control"
+                               class="form-control form-control-sm"
                                value="{{ dictionary.description }}">
                     </div>
                 </p>
@@ -78,45 +83,46 @@
 
     <div id="words_block">
         <br>
+        <h5>Note: List will be saved on editing</h5>
         {% if dictionary.words.count() == 0 %}
             <div>
                 <p>Words list is empty</p>
             </div>
         {% endif %}
         <br>
-        <div id="new_word" style="width:50%; align:left">
-            <table class="table" id="words_table">
+        <div id="new_word" style="width:90%; align:left">
+            <table class="table table-borderless" id="words_table">
                 <thead class="thead-light">
                     <tr>
-                        <th style="text-align:center;">Word or phrase</th>
-                        <th style="text-align:center;">Definition</th>
+                        <th style="text-align:left;">Word or phrase</th>
+                        <th style="text-align:left;">Definition</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody id="words_table_body">
                     <tr>
                         <td>
-                            <input id="new_word_spelling" value="" size="40" placeholder="Enter word or phrase">
+                            <input class="form-control form-control-sm" id="new_word_spelling" value="" placeholder="Enter word or phrase">
                             <span id="spelling_msg" style="color:red"></span>
                         </td>
                         <td>
-                            <input id="new_word_definition" value="" size="55" placeholder="Enter definition">
+                            <input class="form-control form-control-sm" id="new_word_definition" value="" placeholder="Enter definition">
                             <span id="definition_msg" style="color:red"></span>
                         </td>
-                        <td><button id="add_button" class="btn btn-outline-info" onclick="add_new_word();">Add</button></td>
+                        <td><button id="add_button" class="btn btn-outline-info btn-sm" onclick="add_new_word();">Add</button></td>
                     </tr>
                     {% for word in dictionary.words %}
                     <tr id="word_{{ word.id }}">
                         <td><input id="word_spelling_{{ word.id }}"
+                                   class="form-control form-control-sm"
                                    value="{{ word.spelling }}"
                                    required=""
-                                   onchange="save_word({{ word.id}});"
-                                   size="40"></td>
+                                   onchange="save_word({{ word.id}});"></td>
                         <td><input id="word_definition_{{ word.id }}"
+                                   class="form-control form-control-sm"
                                    value="{{ word.definition }}"
                                    required=""
-                                   onchange="save_word({{ word.id}});"
-                                   size="55"></td>
+                                   onchange="save_word({{ word.id}});"></td>
                         <td><button id="button_delete_{{ word.id }}"
                                     class="btn btn-outline-danger btn-sm"
                                     onclick="delete_word({{ word.id }});">X</button></td>

@@ -9,7 +9,7 @@
         <p><span id="current_description">{% if dictionary.description %} {{ dictionary.description }} {% endif %}</span></p>
 
         <form action="{{ url_for('main.edit_dictionary', dictionary_id=dictionary.id) }}">
-            <input class="btn btn-outline-info" type="submit" value="Edit" >
+            <input class="btn btn-outline-info btn-sm" type="submit" value="Edit" >
         </form>
     </div>
     <br>
@@ -20,8 +20,8 @@
 
     {% else %}
         <div>
-            <table class="table table-bordered" id="words_table">
-                <thead class="thead thead-dark">
+            <table class="table table-bordered table-striped" id="words_table">
+                <thead class="thead thead-light">
                     <tr>
                         <th style="text-align:left;width:30%">Phrase</th>
                         <th style="text-align:left;width:60%">Definition</th>
