@@ -6,13 +6,16 @@ from flask import request
 from flask import redirect
 from flask import flash
 from flask import jsonify
+from sqlalchemy import func
+
 from app.models import Dictionary
 from app.models import Word
 from app.main import bp
 from app.main.forms import EditDictionaryForm
-from app.main.forms import EditWordForm
 from app import db
-import logging
+
+from appmodel.GameManager import GameManager
+from appmodel.GameType import GameType
 
 
 @bp.route('/')
@@ -150,14 +153,35 @@ def games():
 @bp.route('/game', methods=['GET', 'POST'])
 @login_required
 def game():
-    game_type = request.args['game_type']
+    param_game_type = request.args['game_type']
+    game_type = GameType.FindDefinition
+    if param_game_type == 'Find spelling':
+        game_type = GameType.FindSpelling
+
+    game_manager = GameManager()
 
     if request.method == 'GET':
-        return render_template('main/game.html', title='Game', game_type=game_type)
+        words_query = Word.query.order_by(func.random()).limit(7).all()
+        logger.info(type(words_query))
+        for word_entry in words_query:
+            # DEBUG
+            logger.info(f'Spelling {word_entry.spelling}')
+            logger.info(f'Definition {word_entry.definition}')
+
+        game_rounds = game_manager.get_game_rounds(game_type, 7)
+
+        logger.info(len(game_rounds))
+
+        debug_text = f'{len(game_rounds)}' + '\n'
+        # for word_entry in words_query:
+        #    debug_text += word_entry.print_game_round() + '\n'
+
+        return render_template('main/game.html', title='Game', game_type=game_type, game_rounds=game_rounds)
 
     if request.method == 'POST':
         # End of a game
         pass
+
 
 logger = logging.getLogger(__name__)
 

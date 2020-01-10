@@ -7,19 +7,50 @@
 {% block app_content %}
 
     <h1>{{ game_type }}</h1>
+    {# Debug #}
+    {% for game_round in game_rounds %}
+        <br>
+        <p id="word_value">{{ game_round.value }}</p>
+        <table style="width:150px">
+            <tr>
+                <td>
+                    <input type="button"
+                           name="answer"
+                           id="answer1"
+                           class="btn btn-outline-dark btn-sm"
+                           style="width:100%"
+                           value="{{ game_round.answer1 }}" size="25">
+                </td>
+                <td>
+                    <input type="button"
+                           name="answer"
+                           id="answer2"
+                           class="btn btn-outline-dark btn-sm"
+                           style="width:100%"
+                           value="{{ game_round.answer2 }}">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="button"
+                           name="answer"
+                           id="answer3"
+                           class="btn btn-outline-dark btn-sm"
+                           style="width:100%"
+                           value="{{ game_round.answer3 }}">
+                </td>
+                <td>
+                    <input type="button"
+                           name="answer"
+                           id="answer4"
+                           class="btn btn-outline-dark btn-sm"
+                           style="width:100%"
+                           value="{{ game_round.answer4 }}">
+                </td>
+            </tr>
+        </table>
 
-    <p id="word_value">Value</p>
-    <table style="width:150px">
-        <tr>
-            <td style="width:55px"><input type="button" name="answer" id="answer1" class="btn btn-outline-dark btn-sm" value="Answer 1" size="25"></td>
-            <td><input type="button" name="answer" id="answer2" class="btn btn-outline-dark btn-sm" value="Answer 2"></td>
-        </tr>
-        <tr>
-            <td><input type="button" name="answer" id="answer3" class="btn btn-outline-dark btn-sm" value="Answer 3"></td>
-            <td><input type="button" name="answer" id="answer4" class="btn btn-outline-dark btn-sm" value="Answer 4"></td>
-        </tr>
-    </table>
-
+    {% endfor %}
 
 {% endblock %}
 

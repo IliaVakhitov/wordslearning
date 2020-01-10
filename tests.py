@@ -1,8 +1,10 @@
 #!/usr/bin/env python
+# !/usr/bin/env python -W ignore::DeprecationWarnin
 
 import unittest
 from app import create_app, db
 from app.models import Word
+from appmodel.GameManager import GameManager
 from config import Config
 
 
@@ -60,6 +62,20 @@ class WordModelCase(unittest.TestCase):
         self.assertFalse(word_house.is_synonym(word_home))
         self.assertEqual(word_house.words_synonyms.count(), 0)
         self.assertEqual(word_home.words_synonyms.count(), 0)
+
+    def test_game_manager(self):
+
+        # Arrange
+        game_manager = GameManager()
+        # Act
+        words_limit = 5
+        list1 = game_manager.get_game_rounds(words_limit)
+        list2 = game_manager.get_game_rounds(words_limit)
+
+        # Assert
+        self.assertNotEqual(list1, list2, 'Cannot be equal')
+        self.assertEqual(len(list1), words_limit, 'Len of game should be equal')
+        self.assertEqual(len(list2), words_limit, 'Len of game should be equal')
 
 
 if __name__ == '__main__':
