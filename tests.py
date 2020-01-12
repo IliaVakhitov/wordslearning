@@ -1,10 +1,9 @@
-#!/usr/bin/env python
-# !/usr/bin/env python -W ignore::DeprecationWarnin
 
 import unittest
 from app import create_app, db
 from app.models import Word
-from appmodel.GameManager import GameManager
+from appmodel.GameGenerator import GameGenerator
+from appmodel.GameType import GameType
 from config import Config
 
 
@@ -63,14 +62,19 @@ class WordModelCase(unittest.TestCase):
         self.assertEqual(word_house.words_synonyms.count(), 0)
         self.assertEqual(word_home.words_synonyms.count(), 0)
 
-    def test_game_manager(self):
+    def test_game_generator(self):
 
         # Arrange
-        game_manager = GameManager()
+        for i in range(50):
+            word_i = Word(spelling=f'spelling{i}', definition=f'definition{i}')
+            db.session.add(word_i)
+        db.session.commit()
+
         # Act
         words_limit = 5
-        list1 = game_manager.get_game_rounds(words_limit)
-        list2 = game_manager.get_game_rounds(words_limit)
+        words_list = Word.query.all()
+        list1 = GameGenerator.generate_game(words_list, GameType.FindSpelling, words_limit)
+        list2 = GameGenerator.generate_game(words_list, GameType.FindDefinition, words_limit)
 
         # Assert
         self.assertNotEqual(list1, list2, 'Cannot be equal')

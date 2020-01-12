@@ -1,7 +1,6 @@
 from typing import List
 
-from app.models import Word
-from appmodel.DictionaryEntry import DictionaryEntry
+from app.models import Word, LearningIndex
 
 
 class GameRound:
@@ -11,14 +10,14 @@ class GameRound:
     """
 
     def __init__(self,
-                 word: DictionaryEntry,
+                 word: Word,
                  value: str,
                  answers: List[str],
                  correct_answer: str,
                  correct_index: int,
-                 learning_index: int):
+                 learning_index: LearningIndex):
 
-        self.dictionary_entry: DictionaryEntry = word
+        self.dictionary_entry: Word = word
         self.value: str = value
         self.answer1: str = answers[0]
         self.answer2: str = answers[1]
@@ -26,8 +25,9 @@ class GameRound:
         self.answer4: str = answers[3]
         self.correct_answer: str = correct_answer
         self.correct_index: int = correct_index
-        self.learning_index: int = learning_index
-        self.new_learning_index: int = learning_index
+        self.learning_index: LearningIndex = learning_index
+        self.learning_index_value: int = 0 if learning_index is None else learning_index.index
+        self.new_learning_index_value: int = 0 if learning_index is None else learning_index.index
         self.learning_index_changed: bool = False
 
     def is_answer_correct(self, answer) -> bool:

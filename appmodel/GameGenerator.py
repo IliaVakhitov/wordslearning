@@ -2,7 +2,7 @@ import logging
 import random
 from typing import List, Optional
 
-from appmodel.DictionaryEntry import DictionaryEntry
+from app.models import Word
 from appmodel.GameRound import GameRound
 from appmodel.GameType import GameType
 
@@ -33,7 +33,7 @@ class GameGenerator:
 
     @staticmethod
     def get_random_definition(
-            all_words: List[DictionaryEntry],
+            all_words: List[Word],
             used_value: str,
             used_values: List[str]) -> str:
         """
@@ -52,7 +52,7 @@ class GameGenerator:
 
     @staticmethod
     def get_random_spelling(
-            all_words: List[DictionaryEntry],
+            all_words: List[Word],
             used_value: str,
             used_values: List[str]) -> str:
         """
@@ -71,7 +71,7 @@ class GameGenerator:
 
     @staticmethod
     def game_find_spelling(
-            words_list: List[DictionaryEntry],
+            words_list: List[Word],
             words_limit: int) -> Optional[List[GameRound]]:
         """
         Generates list of GameRounds
@@ -94,20 +94,20 @@ class GameGenerator:
             # index for correct answer
             correct_index = random.randint(0, 3)
 
-            value = next_word.spelling
-            definitions = []
+            correct_spelling = next_word.spelling
+            spellings = []
             for i in range(3):
-                definitions.append(
-                    GameGenerator.get_random_definition(
-                        words_list, value, definitions))
+                spellings.append(
+                    GameGenerator.get_random_spelling(
+                        words_list, correct_spelling, spellings))
 
-            definitions.insert(correct_index, value)
+            spellings.insert(correct_index, correct_spelling)
             # New game round. Index + 1 [1-4]
             game_rounds.append(
                 GameRound(
                     next_word,
                     next_word.definition,
-                    definitions,
+                    spellings,
                     next_word.spelling,
                     correct_index + 1,
                     next_word.learning_index
@@ -117,7 +117,7 @@ class GameGenerator:
 
     @staticmethod
     def game_find_definition(
-            words_list: List[DictionaryEntry],
+            words_list: List[Word],
             words_limit: int) -> Optional[List[GameRound]]:
         """
         Generates list of GameRounds
@@ -141,20 +141,20 @@ class GameGenerator:
             # index for correct answer
             correct_index = random.randint(0, 3)
 
-            value = next_word.definition
-            spellings = []
+            correct_definition = next_word.definition
+            definitions = []
             for i in range(3):
-                spellings.append(
-                    GameGenerator.get_random_spelling(
-                        words_list, value, spellings))
+                definitions.append(
+                    GameGenerator.get_random_definition(
+                        words_list, correct_definition, definitions))
 
-            spellings.insert(correct_index, value)
+            definitions.insert(correct_index, correct_definition)
             # New game round. Index + 1 [1-4]
             game_rounds.append(
                 GameRound(
                     next_word,
                     next_word.spelling,
-                    spellings,
+                    definitions,
                     next_word.definition,
                     correct_index + 1,
                     next_word.learning_index
@@ -164,7 +164,7 @@ class GameGenerator:
 
     @staticmethod
     def generate_game(
-            words_list: List[DictionaryEntry],
+            words_list: List[Word],
             game_type: GameType,
             words_limit: int = 0) -> Optional[List[GameRound]]:
         """

@@ -13,8 +13,7 @@ from app.models import Word
 from app.main import bp
 from app.main.forms import EditDictionaryForm
 from app import db
-
-from appmodel.GameManager import GameManager
+from appmodel.GameGenerator import GameGenerator
 from appmodel.GameType import GameType
 
 
@@ -158,20 +157,21 @@ def game():
     if param_game_type == 'Find spelling':
         game_type = GameType.FindSpelling
 
-    game_manager = GameManager()
-
     if request.method == 'GET':
+        word_limit = 5
         words_query = Word.query.order_by(func.random()).limit(7).all()
         logger.info(type(words_query))
         for word_entry in words_query:
             # DEBUG
-            logger.info(f'Spelling {word_entry.spelling}')
-            logger.info(f'Definition {word_entry.definition}')
+            logger.info(f'W: {word_entry.spelling}; D: {word_entry.definition}')
 
-        game_rounds = game_manager.get_game_rounds(game_type, 7)
+        print(game_type)
+        game_rounds = GameGenerator.generate_game(words_query, game_type, word_limit)
 
         logger.info(len(game_rounds))
 
+        for game_round in game_rounds:
+            print(game_round.print_game_round())
         debug_text = f'{len(game_rounds)}' + '\n'
         # for word_entry in words_query:
         #    debug_text += word_entry.print_game_round() + '\n'
