@@ -1,3 +1,4 @@
+import json
 import logging
 from flask_login import login_required, current_user
 from flask import render_template
@@ -8,7 +9,7 @@ from flask import flash
 from flask import jsonify
 from sqlalchemy import func
 
-from app.models import Dictionary
+from app.models import Dictionary, CurrentGame
 from app.models import Word
 from app.main import bp
 from app.main.forms import EditDictionaryForm
@@ -160,23 +161,24 @@ def game():
     if request.method == 'GET':
         word_limit = 5
         words_query = Word.query.order_by(func.random()).limit(7).all()
-        logger.info(type(words_query))
-        for word_entry in words_query:
-            # DEBUG
-            logger.info(f'W: {word_entry.spelling}; D: {word_entry.definition}')
+        revision_game = GameGenerator.generate_game(words_query, game_type, word_limit)
+        game_rounds = revision_game.game_rounds
+        revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
+        if revision_game_entry is None:
+            revision_game_entry = CurrentGame()
+            revision_game_entry.game_data = revision_game.to_json()
+            revision_game_entry.user_id = current_user.id
+            revision_game_entry.total_rounds = revision_game.total_rounds
+            revision_game_entry.current_round = 0
+            db.session.add(revision_game_entry)
+            db.session.commit()
+        else:
+            game_rounds = json.load(revision_game_entry.game_data)
 
-        print(game_type)
-        game_rounds = GameGenerator.generate_game(words_query, game_type, word_limit)
-
-        logger.info(len(game_rounds))
-
-        for game_round in game_rounds:
-            print(game_round.print_game_round())
-        debug_text = f'{len(game_rounds)}' + '\n'
-        # for word_entry in words_query:
-        #    debug_text += word_entry.print_game_round() + '\n'
-
-        return render_template('main/game.html', title='Game', game_type=game_type, game_rounds=game_rounds)
+        return render_template('main/game.html',
+                               title='RevisionGame',
+                               game_type=game_type,
+                               game_rounds=game_rounds)
 
     if request.method == 'POST':
         # End of a game

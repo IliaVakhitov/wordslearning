@@ -1,3 +1,4 @@
+from datetime import datetime
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -58,6 +59,7 @@ class User(UserMixin, db.Model):
     secret_question = db.Column(db.String(128))
     secret_answer_hash = db.Column(db.String(128))
     dictionaries = db.relationship('Dictionary', backref='Owner', lazy='dynamic', order_by="Dictionary.id")
+    current_game = db.relationship('CurrentGame', uselist=False, back_populates='user')
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -73,6 +75,19 @@ class User(UserMixin, db.Model):
 
     def check_secret_question(self, secret_answer):
         return check_password_hash(self.secret_answer_hash, secret_answer)
+
+
+class CurrentGame(db.Model):
+    __tablename__ = 'current_game'
+    id = db.Column(db.Integer, primary_key=True)
+    game_date_started = db.Column(db.DateTime, default=datetime.utcnow)
+    game_date_completed = db.Column(db.DateTime)
+    game_completed = db.Column(db.Boolean, default=False)
+    total_rounds = db.Column(db.Integer)
+    current_round = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user = db.relationship('User', back_populates='current_game')
+    game_data = db.Column(db.Text)
 
 
 class Dictionary(db.Model):

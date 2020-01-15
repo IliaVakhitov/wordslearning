@@ -3,6 +3,7 @@ import random
 from typing import List, Optional
 
 from app.models import Word
+from appmodel.RevisionGame import RevisionGame
 from appmodel.GameRound import GameRound
 from appmodel.GameType import GameType
 
@@ -166,7 +167,7 @@ class GameGenerator:
     def generate_game(
             words_list: List[Word],
             game_type: GameType,
-            words_limit: int = 0) -> Optional[List[GameRound]]:
+            words_limit: int = 0) -> Optional[RevisionGame]:
         """
         Generates list of GameRounds
         Does not make sense if words_number < 4. Return None in this case
@@ -175,7 +176,7 @@ class GameGenerator:
         :param words_limit: 0 or higher than 3
         :return:
             None - if no words is dictionaries or words less than 4
-            List of GameRounds
+            instance of RevisionGame
         """
 
         if len(words_list) == 0:
@@ -188,9 +189,9 @@ class GameGenerator:
             return None
 
         if game_type == GameType.FindDefinition:
-            return GameGenerator.game_find_definition(words_list, words_limit)
+            return RevisionGame(game_type, GameGenerator.game_find_definition(words_list, words_limit))
         elif game_type == GameType.FindSpelling:
-            return GameGenerator.game_find_spelling(words_list, words_limit)
+            return RevisionGame(game_type, GameGenerator.game_find_spelling(words_list, words_limit))
 
 
 logger = logging.getLogger(__name__)

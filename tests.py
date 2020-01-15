@@ -1,4 +1,4 @@
-
+import json
 import unittest
 from app import create_app, db
 from app.models import Word
@@ -71,13 +71,14 @@ class WordModelCase(unittest.TestCase):
         db.session.commit()
 
         # Act
-        words_limit = 5
+        words_limit = 10
         words_list = Word.query.all()
         list1 = GameGenerator.generate_game(words_list, GameType.FindSpelling, words_limit)
-        list2 = GameGenerator.generate_game(words_list, GameType.FindDefinition, words_limit)
+        list2 = GameGenerator.generate_game(words_list, GameType.FindSpelling, words_limit)
+
 
         # Assert
-        self.assertNotEqual(list1, list2, 'Cannot be equal')
+        self.assertNotEqual(list1, list2, 'Different games cannot be equal')
         self.assertEqual(len(list1), words_limit, 'Len of game should be equal')
         self.assertEqual(len(list2), words_limit, 'Len of game should be equal')
 
