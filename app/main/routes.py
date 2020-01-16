@@ -166,14 +166,15 @@ def game():
         revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
         if revision_game_entry is None:
             revision_game_entry = CurrentGame()
-            revision_game_entry.game_data = revision_game.to_json()
+            # revision_game_entry.game_data = revision_game.to_json()
             revision_game_entry.user_id = current_user.id
             revision_game_entry.total_rounds = revision_game.total_rounds
             revision_game_entry.current_round = 0
             db.session.add(revision_game_entry)
             db.session.commit()
         else:
-            game_rounds = json.load(revision_game_entry.game_data)
+            pass
+            # game_rounds = json.load(revision_game_entry.game_data)
 
         return render_template('main/game.html',
                                title='RevisionGame',
