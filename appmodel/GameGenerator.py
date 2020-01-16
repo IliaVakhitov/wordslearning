@@ -103,17 +103,24 @@ class GameGenerator:
                         words_list, correct_spelling, spellings))
 
             spellings.insert(correct_index, correct_spelling)
-            # New game round. Index + 1 [1-4]
-            game_rounds.append(
-                GameRound(
-                    next_word,
-                    next_word.definition,
-                    spellings,
-                    next_word.spelling,
-                    correct_index + 1,
-                    next_word.learning_index
-                ))
 
+            # New game round
+            round_data = {}
+            round_data['word_id'] = next_word.id
+            round_data['value'] = next_word.definition
+            round_data['answers'] = spellings
+            round_data['correct_index'] = correct_index
+            round_data['learning_index_id'] = 0 \
+                if next_word.learning_index is None \
+                else next_word.learning_index.id
+
+            round_data['learning_index_value'] = 0 \
+                if next_word.learning_index is None \
+                else next_word.learning_index.index
+
+            game_rounds.append(GameRound(round_data))
+
+        logger.info(f'Game generated, round {len(game_rounds)}, type Find Spelling')
         return game_rounds
 
     @staticmethod
@@ -150,17 +157,24 @@ class GameGenerator:
                         words_list, correct_definition, definitions))
 
             definitions.insert(correct_index, correct_definition)
-            # New game round. Index + 1 [1-4]
-            game_rounds.append(
-                GameRound(
-                    next_word,
-                    next_word.spelling,
-                    definitions,
-                    next_word.definition,
-                    correct_index + 1,
-                    next_word.learning_index
-                ))
 
+            # New game round. Index + 1 [1-4]
+            round_data = {}
+            round_data['word_id'] = next_word.id
+            round_data['value'] = next_word.spelling
+            round_data['answers'] = definitions
+            round_data['correct_index'] = correct_index
+            round_data['learning_index_id'] = 0 \
+                if next_word.learning_index is None \
+                else next_word.learning_index.id
+
+            round_data['learning_index_value'] = 0 \
+                if next_word.learning_index is None \
+                else next_word.learning_index.index
+
+            game_rounds.append(GameRound(round_data))
+
+        logger.info(f'Game generated, round {len(game_rounds)}, type Find Definition')
         return game_rounds
 
     @staticmethod
@@ -181,11 +195,11 @@ class GameGenerator:
 
         if len(words_list) == 0:
             # No words in dictionaries
-            logging.info("No words in dictionaries!")
+            logger.info('No words in dictionaries!')
             return None
 
         if len(words_list) < 4:
-            logging.info("Not enough words to generate game!")
+            logger.info('Not enough words to generate game!')
             return None
 
         if game_type == GameType.FindDefinition:

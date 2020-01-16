@@ -1,3 +1,4 @@
+import json
 from typing import List, Dict
 
 from appmodel.GameRound import GameRound
@@ -16,11 +17,16 @@ class RevisionGame:
     def to_json(self) -> Dict:
         json_data = {'game_rounds': []}
         for game_round in self.game_rounds:
-            json_data['game_rounds'].append({f'game_round{self.game_rounds.index(game_round)}': game_round.to_json()})
+            json_data['game_rounds'].append(json.dumps(game_round.__dict__))
 
         return json_data
 
     def load_game_rounds(self, json_data):
-        pass
+        self.game_rounds.clear()
+        for game_round_data in json_data['game_rounds']:
+            self.game_rounds.append(GameRound(json.loads(game_round_data)))
+        # self.game_rounds.append(json.loads(str(json_data)))
+
+
 
 

@@ -12,45 +12,23 @@
         <br>
         <p id="word_value">{{ game_round.value }}</p>
         <table style="width:150px">
+            {% for next_answer in game_round.answers %}
             <tr>
+
                 <td>
                     <input type="button"
                            name="answer"
-                           id="answer1"
+                           id="{{ next_answer }}"
                            class="btn btn-outline-dark btn-sm"
                            style="width:100%"
-                           value="{{ game_round.answer1 }}" size="25">
-                </td>
-                <td>
-                    <input type="button"
-                           name="answer"
-                           id="answer2"
-                           class="btn btn-outline-dark btn-sm"
-                           style="width:100%"
-                           value="{{ game_round.answer2 }}">
+                           value="{{ next_answer }}" size="25">
                 </td>
             </tr>
-            <tr>
-                <td>
-                    <input type="button"
-                           name="answer"
-                           id="answer3"
-                           class="btn btn-outline-dark btn-sm"
-                           style="width:100%"
-                           value="{{ game_round.answer3 }}">
-                </td>
-                <td>
-                    <input type="button"
-                           name="answer"
-                           id="answer4"
-                           class="btn btn-outline-dark btn-sm"
-                           style="width:100%"
-                           value="{{ game_round.answer4 }}">
-                </td>
-            </tr>
+            {% endfor %}
         </table>
 
     {% endfor %}
 
 {% endblock %}
 
+{# # game_round.answers.index(next_answer) #}

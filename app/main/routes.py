@@ -162,19 +162,20 @@ def game():
         word_limit = 5
         words_query = Word.query.order_by(func.random()).limit(7).all()
         revision_game = GameGenerator.generate_game(words_query, game_type, word_limit)
-        game_rounds = revision_game.game_rounds
+        # game_rounds = revision_game.game_rounds
         revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
         if revision_game_entry is None:
             revision_game_entry = CurrentGame()
-            # revision_game_entry.game_data = revision_game.to_json()
+            revision_game_entry.game_data = json.dumps(revision_game.to_json())
             revision_game_entry.user_id = current_user.id
             revision_game_entry.total_rounds = revision_game.total_rounds
             revision_game_entry.current_round = 0
             db.session.add(revision_game_entry)
             db.session.commit()
         else:
-            pass
-            # game_rounds = json.load(revision_game_entry.game_data)
+            revision_game.load_game_rounds(json.loads(revision_game_entry.game_data))
+
+        game_rounds = revision_game.game_rounds
 
         return render_template('main/game.html',
                                title='RevisionGame',
