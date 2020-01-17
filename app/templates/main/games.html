@@ -8,23 +8,26 @@
         <h5>Found uncompleted game</h5>
         Information about game
         <br>
-        <form action="{{ url_for('main.games') }}" method="post" role="form">
-            <input type="submit" name="continue_previous_game" value="Continue" class="btn btn-outline-dark btn-sm">
-        </form>
+        <a href="{{ url_for('main.game', game_parameter='Continue') }}"
+           name="continue_previous_game" class="btn btn-outline-dark btn-sm">Resume</a>
+        <a href="{{ url_for('main.game', game_parameter='Remove') }}"
+           name="continue_previous_game" class="btn btn-outline-danger btn-sm">Remove</a>
         {% endif %}
     </div>
     <br>
     <h4>Start new game</h4>
+    {% if show_previous_game %}
+    <i>Previous game will be replaced</i>
+    {% endif %}
     <div>
-        <form action="{{ url_for('main.games') }}" method="post" role="form">
-            <input type="submit" name="find_definition" value="Find definition" class="btn btn-outline-dark btn-sm">
-        </form>
+        <a href="{{ url_for('main.game', game_parameter='FindDefinition') }}"
+            name="find_definition" class="btn btn-outline-dark btn-sm">Find definition</a>
     </div>
     <br>
     <div>
-        <form action="{{ url_for('main.games') }}" method="post" role="form">
-            <input type="submit" name="find_spelling" value="Find spelling" class="btn btn-outline-dark btn-sm">
-        </form>
+        <a href="{{ url_for('main.game', game_parameter='FindSpelling') }}" method
+            name="find_spelling" class="btn btn-outline-dark btn-sm">Find spelling
+        </a>
     </div>
 
 {% endblock %}

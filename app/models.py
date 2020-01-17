@@ -83,6 +83,7 @@ class CurrentGame(db.Model):
     game_date_started = db.Column(db.DateTime, default=datetime.utcnow)
     game_date_completed = db.Column(db.DateTime)
     game_completed = db.Column(db.Boolean, default=False)
+    game_type = db.Column(db.String(30))
     total_rounds = db.Column(db.Integer)
     current_round = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
