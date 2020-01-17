@@ -3,7 +3,18 @@
 {% block app_content %}
 
     <h1>Games page</h1>
-
+    <div>
+        {% if show_previous_game %}
+        <h5>Found uncompleted game</h5>
+        Information about game
+        <br>
+        <form action="{{ url_for('main.games') }}" method="post" role="form">
+            <input type="submit" name="continue_previous_game" value="Continue" class="btn btn-outline-dark btn-sm">
+        </form>
+        {% endif %}
+    </div>
+    <br>
+    <h4>Start new game</h4>
     <div>
         <form action="{{ url_for('main.games') }}" method="post" role="form">
             <input type="submit" name="find_definition" value="Find definition" class="btn btn-outline-dark btn-sm">

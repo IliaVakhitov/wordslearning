@@ -10,30 +10,25 @@
     <div id="edit_block" style="display:none" class="collapse">
         <form class="form" action="" method="post" role="form">
             {{ form.hidden_tag() }}
-
-                <table>
-                    <tr>
-                        <td>
-                            <input class="form-control form-control-sm" id="dictionary_name" name="dictionary_name" required="" type="text" value="" placeholder="New dictionary name">
-                        </td>
-                        <td>
-                            <input id="save_dictionary" name="save_dictionary" type="submit" value="Save" class="btn btn-outline-success btn-sm">
-                        </td>
-                        <td>
-                            <input id="btn_cancel" name="cancel" type="button" value="Cancel" class="btn btn-outline-dark btn-sm" onclick="showFunction();">
-                        </td>
-                    </tr>
-                </table>
-
+            <table>
+                <tr>
+                    <td>
+                        <input class="form-control form-control-sm" id="dictionary_name" name="dictionary_name" required="" type="text" value="" placeholder="New dictionary name">
+                    </td>
+                    <td>
+                        <input id="save_dictionary" name="save_dictionary" type="submit" value="Save" class="btn btn-outline-success btn-sm">
+                    </td>
+                    <td>
+                        <input id="btn_cancel" name="cancel" type="button" value="Cancel" class="btn btn-outline-dark btn-sm" onclick="showFunction();">
+                    </td>
+                </tr>
+            </table>
         </form>
     </div>
 
     {% for dictionary in dictionaries %}
-        <p>
-            <form action="{{ url_for('main.dictionary', dictionary_id=dictionary.id) }}">
-                <input type="submit" value="{{ dictionary.dictionary_name }}" class="btn btn-outline-dark btn-sm">
-            </form>
-        </p>
+        <p><a href="{{ url_for('main.dictionary', dictionary_id=dictionary.id) }}"
+               class="btn btn-outline-dark btn-sm">{{ dictionary.dictionary_name }}</a></p>
     {% endfor %}
 
 {% endblock %}

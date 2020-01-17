@@ -5,15 +5,13 @@
     <h1>Hi, {{ current_user.username }}!</h1>
 
     <div>
-        <form action="{{ url_for('main.dictionaries') }}">
-            <input type="submit" value="Dictionaries" class="btn btn-outline-dark btn-sm">
-        </form>
+        <a href="{{ url_for('main.dictionaries') }}"
+        class="btn btn-outline-dark btn-sm">Dictionaries</a>
     </div>
     <br>
     <div>
-        <form action="{{ url_for('main.games') }}">
-            <input type="submit" value="Games" class="btn btn-outline-dark btn-sm">
-        </form>
+        <a href="{{ url_for('main.games') }}"
+           class="btn btn-outline-dark btn-sm">Games</a>
     </div>
 
 {% endblock %}

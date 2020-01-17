@@ -141,13 +141,17 @@ def save_word():
 @login_required
 def games():
     if request.method == 'GET':
-        return render_template('main/games.html', title='Games')
+        revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
+        show_previous_game = (revision_game_entry is not None)
 
-    game_type = 'Find definition'
-    if 'find_spelling' in request.form:
-        game_type = 'Find spelling'
+        return render_template('main/games.html', title='Games', show_previous_game=show_previous_game)
 
-    return redirect(url_for('main.game', game_type=game_type))
+    if request.method == 'POST':
+        game_type = 'Find definition'
+        if 'find_spelling' in request.form:
+            game_type = 'Find spelling'
+
+        return redirect(url_for('main.game', game_type=game_type))
 
 
 @bp.route('/game', methods=['GET', 'POST'])
@@ -162,7 +166,6 @@ def game():
         word_limit = 5
         words_query = Word.query.order_by(func.random()).limit(7).all()
         revision_game = GameGenerator.generate_game(words_query, game_type, word_limit)
-        # game_rounds = revision_game.game_rounds
         revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
         if revision_game_entry is None:
             revision_game_entry = CurrentGame()
@@ -172,8 +175,9 @@ def game():
             revision_game_entry.current_round = 0
             db.session.add(revision_game_entry)
             db.session.commit()
-        else:
+        elif not revision_game_entry.game_completed:
             revision_game.load_game_rounds(json.loads(revision_game_entry.game_data))
+            revision_game.current_round = revision_game_entry.current_round
 
         game_rounds = revision_game.game_rounds
 

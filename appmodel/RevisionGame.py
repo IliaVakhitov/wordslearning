@@ -25,8 +25,5 @@ class RevisionGame:
         self.game_rounds.clear()
         for game_round_data in json_data['game_rounds']:
             self.game_rounds.append(GameRound(json.loads(game_round_data)))
-        # self.game_rounds.append(json.loads(str(json_data)))
-
-
 
 

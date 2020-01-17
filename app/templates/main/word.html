@@ -2,9 +2,8 @@
 
 {% block app_content %}
 
-    <form action="{{ url_for('main.dictionary', dictionary_id=word.dictionary_id) }}">
-        <input type="submit" value="Back" class="btn btn-outline-dark btn-sm">
-    </form>
+    <a href="{{ url_for('main.dictionary', dictionary_id=word.dictionary_id) }}"
+        class="btn btn-outline-dark btn-sm">Back</a>
 
     <h3>{{ word.spelling }}</h3>
     {{ word.definition }}

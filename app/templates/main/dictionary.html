@@ -8,9 +8,8 @@
         </h3>
         <p><span id="current_description">{% if dictionary.description %} {{ dictionary.description }} {% endif %}</span></p>
 
-        <form action="{{ url_for('main.edit_dictionary', dictionary_id=dictionary.id) }}">
-            <input class="btn btn-outline-info btn-sm" type="submit" value="Edit" >
-        </form>
+        <a href="{{ url_for('main.edit_dictionary', dictionary_id=dictionary.id) }}"
+            class="btn btn-outline-info btn-sm">Edit</a>
     </div>
     <br>
     {% if dictionary.words.count() == 0 %}
