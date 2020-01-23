@@ -8,9 +8,9 @@
         <h5>Found uncompleted game</h5>
         Information about game
         <br>
-        <a href="{{ url_for('main.game', game_parameter='Continue') }}"
+        <a href="{{ url_for('games.play_game', game_parameter='Continue') }}"
            name="continue_previous_game" class="btn btn-outline-dark btn-sm">Resume</a>
-        <a href="{{ url_for('main.game', game_parameter='Remove') }}"
+        <a href="{{ url_for('games.play_game', game_parameter='Remove') }}"
            name="continue_previous_game" class="btn btn-outline-danger btn-sm">Remove</a>
         {% endif %}
     </div>
@@ -20,12 +20,12 @@
     <i>Previous game will be replaced</i>
     {% endif %}
     <div>
-        <a href="{{ url_for('main.game', game_parameter='FindDefinition') }}"
+        <a href="{{ url_for('games.play_game', game_parameter='FindDefinition') }}"
             name="find_definition" class="btn btn-outline-dark btn-sm">Find definition</a>
     </div>
     <br>
     <div>
-        <a href="{{ url_for('main.game', game_parameter='FindSpelling') }}" method
+        <a href="{{ url_for('games.play_game', game_parameter='FindSpelling') }}" method
             name="find_spelling" class="btn btn-outline-dark btn-sm">Find spelling
         </a>
     </div>

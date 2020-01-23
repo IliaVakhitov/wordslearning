@@ -34,6 +34,9 @@ def create_app(config_class=Config):
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
 
+    from app.games import bp as games_bp
+    app.register_blueprint(games_bp)
+
     if not os.path.exists('logs'):
         os.mkdir('logs')
     file_handler = RotatingFileHandler('logs/words_learning.log',

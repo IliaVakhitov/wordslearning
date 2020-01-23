@@ -1,8 +1,8 @@
 import json
 from typing import List, Dict
 
-from appmodel.GameRound import GameRound
-from appmodel.GameType import GameType
+from appmodel.game_round import GameRound
+from appmodel.game_type import GameType
 
 
 class RevisionGame:

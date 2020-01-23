@@ -4,10 +4,10 @@ import unittest
 from sqlalchemy import func
 
 from app import create_app, db
-from app.models import Word
-from appmodel.GameGenerator import GameGenerator
-from appmodel.GameType import GameType
-from appmodel.RevisionGame import RevisionGame
+from app.models import Word, User
+from appmodel.game_generator import GameGenerator
+from appmodel.game_type import GameType
+from appmodel.revision_game import RevisionGame
 from config import Config
 
 
@@ -28,6 +28,9 @@ class WordModelCase(unittest.TestCase):
 
         db.create_all()
         # Filling db with mock data
+        user = User(username='Test')
+        db.session.add(user)
+        db.session.commit()
         for i in range(50):
             word_i = Word(spelling=f'spelling{i}', definition=f'definition{i}')
             db.session.add(word_i)

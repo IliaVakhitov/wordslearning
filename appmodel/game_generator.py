@@ -3,9 +3,9 @@ import random
 from typing import List, Optional
 
 from app.models import Word
-from appmodel.RevisionGame import RevisionGame
-from appmodel.GameRound import GameRound
-from appmodel.GameType import GameType
+from appmodel.revision_game import RevisionGame
+from appmodel.game_round import GameRound
+from appmodel.game_type import GameType
 
 
 class GameGenerator:

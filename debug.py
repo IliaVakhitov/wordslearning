@@ -1,7 +1,7 @@
 from app import create_app, db
 from app.models import Word
 
-from appmodel.GameType import GameType
+from appmodel.game_type import GameType
 
 # app = create_app()
 
