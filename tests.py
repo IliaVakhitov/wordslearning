@@ -104,7 +104,7 @@ class WordModelCase(unittest.TestCase):
         # Assert
         self.assertEqual(len(revision_game.game_rounds), len(revision_game1.game_rounds), 'Len should be equal')
 
-    def test_pages(self):
+    def test_pages_no_login(self):
         # Arrange
 
         # Act
@@ -113,14 +113,23 @@ class WordModelCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Act
-        response = self.app_client.get('/login', follow_redirects=True)
+        response = self.app_client.get('/index', follow_redirects=True)
+        # Assert
+        self.assertEqual(response.status_code, 200)
+
+        # Pages without login
+        # Act
+        response = self.app_client.get('/auth/login', follow_redirects=True)
         # Assert
         self.assertEqual(response.status_code, 200)
 
         # Act
-        response = self.app_client.get('/register', follow_redirects=True)
+        response = self.app_client.get('/auth/register', follow_redirects=True)
         # Assert
         self.assertEqual(response.status_code, 200)
+
+    def test_pages_login_required(self):
+        pass
 
 
 if __name__ == '__main__':

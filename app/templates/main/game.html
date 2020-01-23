@@ -7,28 +7,22 @@
 {% block app_content %}
 
     <h1>{{ game_type }}</h1>
-    {# Debug #}
-    {% for game_round in game_rounds %}
-        <br>
-        <p id="word_value">{{ game_round.value }}</p>
-        <table style="width:150px">
-            {% for next_answer in game_round.answers %}
-            <tr>
+    <br>
+    <p id="value">{{ 'Value' }}</p>
+    <table style="width:150px">
+        {% for i in range(4) %}
+        <tr>
+            <td>
+                <input type="button"
+                       name="answer"
+                       id="{{ 'answer{}'.format(i) }}"
+                       class="btn btn-outline-dark btn-sm"
+                       style="width:100%"
+                       value="{{ 'answer{}'.format(i) }}" size="25">
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
 
-                <td>
-                    <input type="button"
-                           name="answer"
-                           id="{{ next_answer }}"
-                           class="btn btn-outline-dark btn-sm"
-                           style="width:100%"
-                           value="{{ next_answer }}" size="25">
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-
-    {% endfor %}
 
 {% endblock %}
-
-{# # game_round.answers.index(next_answer) #}

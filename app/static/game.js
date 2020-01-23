@@ -1,5 +1,9 @@
+
 $(document).ready(function() {
-    // var value = document.getElementById('word_value').innerHTML = "Function called";
+    getNext_Round();
 });
 
-// TODO set parameters of game
+
+function getNext_Round() {
+    //alert('Done');
+}

@@ -90,6 +90,15 @@ class CurrentGame(db.Model):
     user = db.relationship('User', back_populates='current_game')
     game_data = db.Column(db.Text)
 
+    def get_next_round(self, next_round: int):
+        if self is None:
+            return None
+        if self.game_data is None:
+            return None
+        if self.total_rounds < next_round:
+            return None
+        # game_data
+
 
 class Dictionary(db.Model):
     __tablename__ = 'dictionaries'

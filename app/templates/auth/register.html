@@ -1,12 +1,37 @@
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
 
     <h1>Register</h1>
     <div class="row">
         <div class="col-md-4">
-            {{ wtf.quick_form(form) }}
+            <form action="post" method="post" role="form">
+                {{ form.hidden_tag() }}
+                <div class="input-group mb-3 input-group-sm">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Username</span>
+                    </div>
+                    <input id="username"
+                           class="form-control form-control-sm"
+                           name="username"
+                           required=""
+                           type="text"
+                           value="">
+                </div>
+
+                <div class="input-group mb-3 input-group-sm">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Password</span>
+                    </div>
+                    <input id="password"
+                           class="form-control form-control-sm"
+                           name="password"
+                           required=""
+                           type="password"
+                           value="">
+                </div>
+                <input type="submit" class="btn btn-outline-dark btn-sm" value="Register">
+            </form>
         </div>
     </div>
 
