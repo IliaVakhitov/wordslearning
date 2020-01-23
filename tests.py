@@ -23,6 +23,9 @@ class WordModelCase(unittest.TestCase):
         self.app = create_app(TestConfig)
         self.app_context = self.app.app_context()
         self.app_context.push()
+        self.app.testing = True
+        self.app_client = self.app.test_client()
+
         db.create_all()
         # Filling db with mock data
         for i in range(50):
@@ -82,7 +85,6 @@ class WordModelCase(unittest.TestCase):
         list1 = GameGenerator.generate_game(words_list, GameType.FindSpelling, words_limit)
         list2 = GameGenerator.generate_game(words_list, GameType.FindSpelling, words_limit)
 
-
         # Assert
         self.assertNotEqual(list1, list2, 'Different games cannot be equal')
         # self.assertEqual(len(list1), words_limit, 'Len of game should be equal')
@@ -101,6 +103,24 @@ class WordModelCase(unittest.TestCase):
         revision_game1.load_game_rounds(json.loads(json_data))
         # Assert
         self.assertEqual(len(revision_game.game_rounds), len(revision_game1.game_rounds), 'Len should be equal')
+
+    def test_pages(self):
+        # Arrange
+
+        # Act
+        response = self.app_client.get('/', follow_redirects=True)
+        # Assert
+        self.assertEqual(response.status_code, 200)
+
+        # Act
+        response = self.app_client.get('/login', follow_redirects=True)
+        # Assert
+        self.assertEqual(response.status_code, 200)
+
+        # Act
+        response = self.app_client.get('/register', follow_redirects=True)
+        # Assert
+        self.assertEqual(response.status_code, 200)
 
 
 if __name__ == '__main__':
