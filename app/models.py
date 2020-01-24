@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -90,14 +91,16 @@ class CurrentGame(db.Model):
     user = db.relationship('User', back_populates='current_game')
     game_data = db.Column(db.Text)
 
-    def get_next_round(self, next_round: int):
+    def get_next_round(self):
         if self is None:
             return None
         if self.game_data is None:
             return None
-        if self.total_rounds < next_round:
+        if self.total_rounds < self.current_round:
             return None
-        # game_data
+        json_rounds = json.loads(self.game_data)
+
+        return json.loads(json_rounds[self.current_round])
 
 
 class Dictionary(db.Model):

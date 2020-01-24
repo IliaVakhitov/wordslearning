@@ -47,14 +47,14 @@ def register():
 
     registration_form = RegistrationForm()
     if registration_form.validate_on_submit():
-        user = User(username=registration_form.username.data)
-        user.secret_question = registration_form.secret_question.data
-        user.set_password(registration_form.password.data)
-        user.set_secret_answer(registration_form.secret_answer.data)
-        db.session.add(user)
+        new_user = User(username=registration_form.username.data)
+        new_user.secret_question = registration_form.secret_question.data
+        new_user.set_password(registration_form.password.data)
+        new_user.set_secret_answer(registration_form.secret_answer.data)
+        db.session.add(new_user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
-        login_user(user)
+        login_user(new_user)
         return redirect(url_for('auth.login'))
 
     return render_template('auth/register.html', title='Register', form=registration_form)

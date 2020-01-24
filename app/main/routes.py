@@ -19,6 +19,8 @@ from app import db
 @bp.route('/')
 @bp.route('/index')
 @login_required
+# TODO make index do not require login
+# Todo add page with information and link to login
 def index():
     return render_template('index.html', title='Home')
 
