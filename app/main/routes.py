@@ -72,7 +72,6 @@ def edit_dictionary(dictionary_id):
         if 'save_dictionary' in request.form:
             dictionary_entry.dictionary_name = dictionary_form.dictionary_name.data.strip()
             dictionary_entry.description = dictionary_form.description.data.strip()
-            # TODO save words list
             db.session.commit()
             flash('Dictionary saved!')
             return redirect(url_for('main.dictionary', dictionary_id=dictionary_entry.id))

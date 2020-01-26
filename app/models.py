@@ -96,11 +96,10 @@ class CurrentGame(db.Model):
             return None
         if self.game_data is None:
             return None
-        if self.total_rounds < self.current_round:
+        if self.total_rounds <= self.current_round:
             return None
         json_rounds = json.loads(self.game_data)
-
-        return json.loads(json_rounds[self.current_round])
+        return json.loads(json_rounds['game_rounds'][self.current_round])
 
 
 class Dictionary(db.Model):

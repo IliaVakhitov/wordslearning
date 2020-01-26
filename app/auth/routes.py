@@ -17,15 +17,15 @@ def login():
         return redirect(url_for('main.index'))
     login_form = LoginForm()
     if login_form.validate_on_submit():
-        user = User.query.filter_by(username=login_form.username.data).first()
-        if user is None:
+        db_user = User.query.filter_by(username=login_form.username.data).first()
+        if db_user is None:
             flash('Invalid username')
             return redirect(url_for('auth.login'))
 
-        if user.check_password(login_form.password.data):
+        if db_user.check_password(login_form.password.data):
             flash('Invalid password')
             return redirect(url_for('auth.login'))
-        login_user(user, remember=login_form.remember_me.data)
+        login_user(db_user, remember=login_form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('main.index')

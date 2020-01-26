@@ -9,7 +9,7 @@
     <h1>{{ game_type }}</h1>
     <br>
     <p id="value">{{ 'Value' }}</p>
-    <table style="width:150px">
+    <table style="width:250px">
         {% for i in range(4) %}
         <tr>
             <td>
@@ -18,11 +18,14 @@
                        id="{{ 'answer{}'.format(i) }}"
                        class="btn btn-outline-dark btn-sm"
                        style="width:100%"
+                       onclick=""
                        value="{{ 'answer{}'.format(i) }}" size="25">
             </td>
         </tr>
         {% endfor %}
     </table>
-
+    <div>
+        <br><button id="button_next" name="button_next" onclick="next_round();" value="Next" class="btn btn-outline-dark btn-sm">Next</button>
+    </div>
 
 {% endblock %}

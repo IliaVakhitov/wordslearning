@@ -10,6 +10,7 @@ from appmodel.game_round import GameRound
 from appmodel.game_type import GameType
 from appmodel.revision_game import RevisionGame
 from config import Config
+from flask_login import login_user, logout_user, current_user
 
 
 class TestConfig(Config):
@@ -27,8 +28,10 @@ class WordModelCase(unittest.TestCase):
         self.app_client = self.app.test_client()
 
         db.create_all()
+
         # Filling db with mock data
         user = User(username='Test')
+        user.set_password('Test')
         db.session.add(user)
         db.session.commit()
         user_dictionary = Dictionary(dictionary_name='dictionary', user_id=user.id)
@@ -39,87 +42,79 @@ class WordModelCase(unittest.TestCase):
             db.session.add(word_i)
         db.session.commit()
 
+        # login_user(user)
+    
+        # Add entry to current_game table
+        word_limit = 10
+        game_type = GameType.FindSpelling
+        words_query = Word.query.order_by(func.random()).all()
+        self.revision_game = GameGenerator.generate_game(words_query, game_type, word_limit)
+        current_user = User.query.filter_by(username='Test').first()
+        self.round_index = randint(0, 9)
+        self.round_i = self.revision_game.game_rounds[self.round_index]
+        revision_game_entry = CurrentGame()
+        revision_game_entry.game_type = game_type.name
+        revision_game_entry.game_data = json.dumps(self.revision_game.to_json())
+        revision_game_entry.user_id = current_user.id
+        revision_game_entry.total_rounds = self.revision_game.total_rounds
+        revision_game_entry.current_round = 0
+        db.session.add(revision_game_entry)
+        db.session.commit()
+
     def tearDown(self):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
 
     def test_user_db(self):
-        # Arrange
-        # Act
-        user = User.query.filter_by(username='Test').first()
-        # Assert
-        self.assertIsNotNone(user, 'User could not be None')
-        self.assertEqual(user.username, 'Test', 'Username should be \'Test\'')
+        with self.app_client:
+            # Arrange
+            self.login_test_user('Test', 'Test')
+            # Act
+            user = User.query.filter_by(username='Test').first()
+            # Assert
+            self.assertEqual(current_user, user, 'User should Test')
+            self.assertIsNotNone(current_user, 'User could not be None')
+            self.assertEqual(current_user.username, 'Test', 'Username should be \'Test\'')
 
     def test_user_dictionary(self):
         # Arrange
-        current_user = User.query.filter_by(username='Test').first()
+        curr_user = User.query.filter_by(username='Test').first()
         # Act
-        user_dictionary = Dictionary.query.filter_by(user_id=current_user.id).first()
+        user_dictionary = Dictionary.query.filter_by(user_id=curr_user.id).first()
         # Assert
         self.assertIsNotNone(user_dictionary, 'User dictionary should not be None')
         self.assertEqual(user_dictionary.dictionary_name, 'dictionary', 'Dictionary name should be \'dictionary\'')
 
     def test_current_game(self):
         # Arrange
+        curr_user = User.query.filter_by(username='Test').first()
         word_limit = 10
-        round_i = randint(0,9)
         game_type = GameType.FindSpelling
-        words_query = Word.query.order_by(func.random()).all()
-        revision_game = GameGenerator.generate_game(words_query, game_type, word_limit)
-        current_user = User.query.filter_by(username='Test').first()
-        round1 = revision_game.game_rounds[round_i]
-        revision_game_entry = CurrentGame()
-        revision_game_entry.game_type = game_type.name
-        revision_game_entry.game_data = json.dumps(revision_game.to_json())
-        revision_game_entry.user_id = current_user.id
-        revision_game_entry.total_rounds = revision_game.total_rounds
-        revision_game_entry.current_round = 0
-        db.session.add(revision_game_entry)
-        db.session.commit()
-
+        revision_game_entry = CurrentGame.query.filter_by(user_id=curr_user.id).first()
         # Act
         json_rounds = json.loads(revision_game_entry.game_data)
-        loaded_round = GameRound(json.loads(json_rounds['game_rounds'][round_i]))
+        loaded_round = GameRound(json.loads(json_rounds['game_rounds'][self.round_index]))
 
         # Assert
-        self.assertIsNotNone(revision_game.game_rounds, 'Game rounds should not be None')
-        self.assertEqual(len(revision_game.game_rounds), word_limit)
+        self.assertEqual(revision_game_entry.game_type, game_type.name, 'Game type not equal')
+        self.assertIsNotNone(self.revision_game.game_rounds, 'Game rounds should not be None')
+        self.assertEqual(len(self.revision_game.game_rounds), word_limit)
         self.assertEqual(len(json_rounds['game_rounds']), word_limit)
-        self.assertEqual(loaded_round.value,
-                         round1.value,
-                         f'Value should be '
-                         f'\'{round1.value}\' '
-                         f'not \'{loaded_round.value}\'')
-        for i in range(4):
-            self.assertEqual(loaded_round.answers[i],
-                             round1.answers[i],
-                             f'Answer should be '
-                             f'\'{round1.answers[i]}\' '
-                             f'not \'{loaded_round.answers[i]}\'')
-        self.assertEqual(loaded_round.correct_index,
-                         round1.correct_index,
-                         f'Correct_index should be '
-                         f'\'{round1.correct_index}\' not \'{loaded_round.correct_index}\'')
+        self.assertEqual(loaded_round.value, self.round_i.value, f'Value should be equal')
 
-        self.assertEqual(loaded_round.correct_answer,
-                         round1.correct_answer,
-                         f'Correct_answer should be '
-                         f'\'{round1.correct_answer}\' '
-                         f'not \'{loaded_round.correct_answer}\'')
+        for i in range(4):
+            self.assertEqual(loaded_round.answers[i], self.round_i.answers[i], f'Answer should be equal')
+
+        self.assertEqual(loaded_round.correct_index, self.round_i.correct_index, f'Correct_index should be equal')
 
         self.assertEqual(loaded_round.learning_index_id,
-                         round1.learning_index_id,
-                         f'Learning_index_id should be '
-                         f'\'{round1.learning_index_id}\' '
-                         f'not \'{loaded_round.learning_index_id}\'')
+                         self.round_i.learning_index_id,
+                         f'Learning_index_id should be equal')
 
         self.assertEqual(loaded_round.learning_index_value,
-                         round1.learning_index_value,
-                         f'Learning_index_value should be '
-                         f'\'{round1.learning_index_value}\' '
-                         f'not \'{loaded_round.learning_index_value}\'')
+                         self.round_i.learning_index_value,
+                         f'Learning_index_value should be equal')
 
     def test_synonym(self):
         # Arrange
@@ -185,7 +180,7 @@ class WordModelCase(unittest.TestCase):
 
     def test_pages_no_login(self):
         # Arrange
-
+        # logout_user()
         # Act
         response = self.app_client.get('/', follow_redirects=True)
         # Assert
@@ -208,7 +203,22 @@ class WordModelCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_pages_login_required(self):
-        pass
+        # Arrange
+        user = User.query.filter_by(username='Test').first()
+        # login_user(user)
+        # Act
+        response = self.app_client.get('/dictionaries', follow_redirects=True)
+        # Assert
+        self.assertEqual(response.status_code, 200)
+
+    def login_test_user(self, username, password):
+        return self.app_client.post('/login', data=dict(
+            username=username,
+            password=password
+        ), follow_redirects=True)
+
+    def logout_user(self):
+        return self.app_client.get('/logout', follow_redirects=True)
 
 
 if __name__ == '__main__':

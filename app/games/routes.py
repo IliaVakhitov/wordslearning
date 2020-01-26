@@ -1,7 +1,7 @@
 import json
 import logging
 from flask_login import login_required, current_user
-from flask import render_template, flash
+from flask import render_template, flash, jsonify
 from flask import url_for
 from flask import request
 from flask import redirect
@@ -11,6 +11,7 @@ from app.games import bp
 from app import db
 from app.models import CurrentGame, Word, Dictionary
 from appmodel.game_generator import GameGenerator
+from appmodel.game_round import GameRound
 from appmodel.game_type import GameType
 from appmodel.revision_game import RevisionGame
 
@@ -18,14 +19,32 @@ from appmodel.revision_game import RevisionGame
 @bp.route('/define', methods=['GET'])
 @login_required
 def define():
-    if request.method == 'GET':
-        revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
-        show_previous_game = (revision_game_entry is not None and not revision_game_entry.game_completed)
+    revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
+    show_previous_game = (revision_game_entry is not None and not revision_game_entry.game_completed)
 
-        return render_template('games/define_game.html', title='Games', show_previous_game=show_previous_game)
+    return render_template('games/define_game.html', title='Games', show_previous_game=show_previous_game)
 
 
-@bp.route('/play/<game_parameter>', methods=['GET', 'POST'])
+@bp.route('/next_round', methods=['POST'])
+@login_required
+def next_round():
+    revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
+    n_round = revision_game_entry.get_next_round()
+    # print(url_for('games.game_statistic'))
+    if n_round is None:
+        return jsonify({'redirect': url_for('games.game_statistic')})
+    revision_game_entry.current_round += 1
+    db.session.commit()
+    return n_round
+
+
+@bp.route('/game_statistic/', methods=['GET'])
+@login_required
+def game_statistic():
+    return render_template('games/game_statistic.html')
+
+
+@bp.route('/play/<game_parameter>', methods=['GET'])
 @login_required
 def play_game(game_parameter):
     """
@@ -51,9 +70,14 @@ def play_game(game_parameter):
                 db.session.delete(revision_game_entry)
                 db.session.commit()
             return redirect(url_for('games.define'))
-        else:
+        elif game_parameter == 'FindDefinition':
             game_type = GameType[game_parameter]
             new_game = True
+        elif game_parameter == 'FindSpelling':
+            game_type = GameType[game_parameter]
+            new_game = True
+        elif game_parameter == 'End_Game':
+            return redirect(url_for('games.game_statistic'))
 
         if new_game:
             if revision_game_entry is not None:
@@ -88,10 +112,6 @@ def play_game(game_parameter):
                                title='RevisionGame',
                                game_type=game_type,
                                game_rounds=game_rounds)
-
-    if request.method == 'POST':
-        # End of a game
-        pass
 
 
 logger = logging.getLogger(__name__)
