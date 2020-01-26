@@ -1,7 +1,7 @@
 import json
 import logging
 from flask_login import login_required, current_user
-from flask import render_template
+from flask import render_template, flash
 from flask import url_for
 from flask import request
 from flask import redirect
@@ -9,7 +9,7 @@ from sqlalchemy import func
 
 from app.games import bp
 from app import db
-from app.models import CurrentGame, Word
+from app.models import CurrentGame, Word, Dictionary
 from appmodel.game_generator import GameGenerator
 from appmodel.game_type import GameType
 from appmodel.revision_game import RevisionGame
@@ -59,10 +59,20 @@ def play_game(game_parameter):
             if revision_game_entry is not None:
                 db.session.delete(revision_game_entry)
                 db.session.commit()
-
+            # TODO get a game parameter
             word_limit = 5
-            words_query = Word.query.order_by(func.random()).limit(7).all()
+            dictionaries = Dictionary.query.filter_by(user_id=current_user.id).all()
+            dict_ids = [d.id for d in dictionaries]
+            words_query = Word.query.\
+                filter(Word.dictionary_id.in_(dict_ids)).\
+                order_by(func.random()).\
+                limit(word_limit).all()
             revision_game = GameGenerator.generate_game(words_query, game_type, word_limit)
+            if revision_game is None:
+                logger.info('Could not create game!')
+                flash('Could not create game!')
+                return redirect(url_for('games.define'))
+
             revision_game_entry = CurrentGame()
             revision_game_entry.game_type = game_type.name
             revision_game_entry.game_data = json.dumps(revision_game.to_json())
@@ -72,8 +82,7 @@ def play_game(game_parameter):
             db.session.add(revision_game_entry)
             db.session.commit()
 
-        if revision_game is not None:
-            game_rounds = revision_game.game_rounds
+        game_rounds = revision_game.game_rounds
 
         return render_template('games/play_game.html',
                                title='RevisionGame',

@@ -202,6 +202,7 @@ class GameGenerator:
             logger.info('Not enough words to generate game!')
             return None
 
+        logger.info('Generating game')
         if game_type == GameType.FindDefinition:
             return RevisionGame(game_type, GameGenerator.game_find_definition(words_list, words_limit))
         elif game_type == GameType.FindSpelling:
@@ -209,3 +210,4 @@ class GameGenerator:
 
 
 logger = logging.getLogger(__name__)
+
