@@ -18,14 +18,18 @@
                        id="{{ 'answer{}'.format(i) }}"
                        class="btn btn-outline-dark btn-sm"
                        style="width:100%"
-                       onclick=""
+                       onclick="{{ 'check_answer({})'.format(i) }}"
                        value="{{ 'answer{}'.format(i) }}" size="25">
             </td>
         </tr>
         {% endfor %}
     </table>
     <div>
-        <br><button id="button_next" name="button_next" onclick="next_round();" value="Next" class="btn btn-outline-dark btn-sm">Next</button>
+        <br><button id="button_next"
+                    name="button_next"
+                    onclick="next_round();"
+                    value="Next"
+                    class="btn btn-outline-dark btn-sm">Next</button>
     </div>
 
 {% endblock %}

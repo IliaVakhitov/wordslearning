@@ -20,7 +20,9 @@ from appmodel.revision_game import RevisionGame
 @login_required
 def define():
     revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
-    show_previous_game = (revision_game_entry is not None and not revision_game_entry.game_completed)
+    show_previous_game = (revision_game_entry is not None
+                          and not revision_game_entry.game_completed
+                          and revision_game_entry.total_rounds > revision_game_entry.current_round)
 
     return render_template('games/define_game.html', title='Games', show_previous_game=show_previous_game)
 
@@ -29,13 +31,31 @@ def define():
 @login_required
 def next_round():
     revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
-    n_round = revision_game_entry.get_next_round()
-    # print(url_for('games.game_statistic'))
-    if n_round is None:
+    game_ended = revision_game_entry.get_next_round()
+    if game_ended:
         return jsonify({'redirect': url_for('games.game_statistic')})
-    revision_game_entry.current_round += 1
-    db.session.commit()
-    return n_round
+    return revision_game_entry.get_current_round()
+
+
+@bp.route('/current_round', methods=['POST'])
+@login_required
+def current_round():
+    revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
+    return revision_game_entry.get_current_round()
+
+
+@bp.route('/check_answer', methods=['POST'])
+@login_required
+def check_answer():
+    revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
+    return jsonify({'correct': revision_game_entry.check_answer(request.form['answer_index'])})
+
+
+@bp.route('/get_correct_index', methods=['POST'])
+@login_required
+def get_correct_index():
+    revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
+    return jsonify({'correct_index': revision_game_entry.get_correct_index()})
 
 
 @bp.route('/game_statistic/', methods=['GET'])
@@ -57,19 +77,20 @@ def play_game(game_parameter):
     if request.method == 'GET':
         game_type = GameType.FindDefinition
         revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
+
         revision_game = None
         game_rounds = []
         new_game = False
         if game_parameter == 'Continue':
-            revision_game = RevisionGame(GameType[revision_game_entry.game_type], [])
-            revision_game.load_game_rounds(json.loads(revision_game_entry.game_data))
-            revision_game.current_round = revision_game_entry.current_round
-            revision_game.total_rounds = revision_game_entry.total_rounds
+            if revision_game_entry is not None and revision_game_entry.game_completed:
+                return redirect(url_for('games.game_statistic'))
+            game_type = GameType[revision_game_entry.game_type]
         elif game_parameter == 'Remove':
             if revision_game_entry is not None:
                 db.session.delete(revision_game_entry)
                 db.session.commit()
             return redirect(url_for('games.define'))
+
         elif game_parameter == 'FindDefinition':
             game_type = GameType[game_parameter]
             new_game = True
@@ -106,12 +127,9 @@ def play_game(game_parameter):
             db.session.add(revision_game_entry)
             db.session.commit()
 
-        game_rounds = revision_game.game_rounds
-
         return render_template('games/play_game.html',
-                               title='RevisionGame',
-                               game_type=game_type,
-                               game_rounds=game_rounds)
+                               title='Revision Game',
+                               game_type=game_type)
 
 
 logger = logging.getLogger(__name__)

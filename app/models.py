@@ -91,12 +91,36 @@ class CurrentGame(db.Model):
     user = db.relationship('User', back_populates='current_game')
     game_data = db.Column(db.Text)
 
-    def get_next_round(self):
+    def get_next_round(self) -> bool:
+        """
+        Set +1 to current_round
+        :return:
+            True - game completed (previous was last round)
+            False - game could be resumed
+        """
+        self.current_round += 1
+        db.session.commit()
+        if self.total_rounds == self.current_round:
+            self.game_completed = True
+            self.game_date_completed = datetime.utcnow()
+            db.session.commit()
+            return True
+        return False
+
+    def get_correct_index(self) -> int:
+        current_round = self.get_current_round()
+        return int(current_round['correct_index'])
+
+    def check_answer(self, answer_index: int) -> bool:
+        current_round = self.get_current_round()
+        return int(current_round['correct_index']) == int(answer_index)
+
+    def get_current_round(self):
         if self is None:
             return None
         if self.game_data is None:
             return None
-        if self.total_rounds <= self.current_round:
+        if self.game_completed:
             return None
         json_rounds = json.loads(self.game_data)
         return json.loads(json_rounds['game_rounds'][self.current_round])
