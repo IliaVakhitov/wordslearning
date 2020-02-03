@@ -78,6 +78,15 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.secret_answer_hash, secret_answer)
 
 
+class Statistic(db.Model):
+    __tablename__ = 'statistic'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    game_type = db.Column(db.String(30))
+    total_rounds = db.Column(db.Integer)
+    correct_answers = db.Column(db.Integer, default=0)
+
+
 class CurrentGame(db.Model):
     __tablename__ = 'current_game'
     id = db.Column(db.Integer, primary_key=True)
