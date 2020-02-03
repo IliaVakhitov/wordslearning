@@ -40,7 +40,7 @@ class GameGenerator:
         """
         Function allows to get random translation or spelling from given list of DictEntries
         :param all_words: Source list of DictionaryEntries
-        :param used_value: correct answer. This value is ignored
+        :param used_value: correct answer. This value will be ignored
         :param used_values: this values will be ignored
         :return: str translation
         """
@@ -59,7 +59,7 @@ class GameGenerator:
         """
         Function allows to get random translation or spelling from given list of DictEntries
         :param all_words: Source list of DictionaryEntries
-        :param used_value: correct answer. This value is ignored
+        :param used_value: correct answer. This value will be ignored
         :param used_values: this values will be ignored
         :return: str spelling
         """

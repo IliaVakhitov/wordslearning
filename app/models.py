@@ -16,7 +16,7 @@ class LearningIndex(db.Model):
     __tablename__ = 'learning_index'
 
     id = db.Column(db.Integer, primary_key=True)
-    index = db.Column(db.Integer)
+    index = db.Column(db.Integer, default=0)
     word_id = db.Column(db.Integer, db.ForeignKey('words.id'))
     word = db.relationship('Word', back_populates='learning_index')
 
@@ -122,7 +122,16 @@ class CurrentGame(db.Model):
         current_round = self.get_current_round()
         if int(current_round['correct_index']) == int(answer_index):
             self.correct_answers += 1
+            learning_index = LearningIndex.query.filter_by(id=current_round['learning_index_id']).first()
+            if learning_index is None:
+                learning_index = LearningIndex(word_id=current_round['word_id'], index=0)
+                db.session.add(learning_index)
+                db.session.commit()
+            learning_index.index += 10
             db.session.commit()
+        else:
+
+            pass
 
         return int(current_round['correct_index'])
 
