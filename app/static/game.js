@@ -22,7 +22,7 @@ function next_round() {
 }
 
 function check_answer(answer_index) {
-    $.post('/get_correct_index',
+    $.post('/get_correct_index',{answer_index: answer_index}
     ).done(function(response) {
         set_answer(parseInt(response.correct_index), answer_index);
     }).fail(function() {

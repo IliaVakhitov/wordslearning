@@ -44,24 +44,26 @@ def current_round():
     return revision_game_entry.get_current_round()
 
 
-@bp.route('/check_answer', methods=['POST'])
-@login_required
-def check_answer():
-    revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
-    return jsonify({'correct': revision_game_entry.check_answer(request.form['answer_index'])})
-
-
 @bp.route('/get_correct_index', methods=['POST'])
 @login_required
 def get_correct_index():
     revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
-    return jsonify({'correct_index': revision_game_entry.get_correct_index()})
+    return jsonify({'correct_index': revision_game_entry.get_correct_index(request.form['answer_index'])})
 
 
 @bp.route('/game_statistic/', methods=['GET'])
 @login_required
 def game_statistic():
-    return render_template('games/game_statistic.html')
+    revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=True).first()
+    total_rounds = revision_game_entry.total_rounds
+    correct_answers = revision_game_entry.correct_answers
+    # TODO update statistic table
+    db.session.delete(revision_game_entry)
+    db.session.commit()
+
+    return render_template('games/game_statistic.html',
+                           total_rounds=total_rounds,
+                           correct_answers=correct_answers)
 
 
 @bp.route('/play/<game_parameter>', methods=['GET'])
@@ -74,6 +76,7 @@ def play_game(game_parameter):
         FindSpelling - start new game
 
     """
+    # TODO split function in several
     if request.method == 'GET':
         game_type = GameType.FindDefinition
         revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()

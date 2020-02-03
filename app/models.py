@@ -86,7 +86,8 @@ class CurrentGame(db.Model):
     game_completed = db.Column(db.Boolean, default=False)
     game_type = db.Column(db.String(30))
     total_rounds = db.Column(db.Integer)
-    current_round = db.Column(db.Integer)
+    correct_answers = db.Column(db.Integer, default=0)
+    current_round = db.Column(db.Integer, default=0)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User', back_populates='current_game')
     game_data = db.Column(db.Text)
@@ -105,15 +106,16 @@ class CurrentGame(db.Model):
             self.game_date_completed = datetime.utcnow()
             db.session.commit()
             return True
+
         return False
 
-    def get_correct_index(self) -> int:
+    def get_correct_index(self, answer_index: int) -> int:
         current_round = self.get_current_round()
-        return int(current_round['correct_index'])
+        if int(current_round['correct_index']) == int(answer_index):
+            self.correct_answers += 1
+            db.session.commit()
 
-    def check_answer(self, answer_index: int) -> bool:
-        current_round = self.get_current_round()
-        return int(current_round['correct_index']) == int(answer_index)
+        return int(current_round['correct_index'])
 
     def get_current_round(self):
         if self is None:
@@ -123,6 +125,7 @@ class CurrentGame(db.Model):
         if self.game_completed:
             return None
         json_rounds = json.loads(self.game_data)
+
         return json.loads(json_rounds['game_rounds'][self.current_round])
 
 
