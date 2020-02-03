@@ -9,11 +9,10 @@ from sqlalchemy import func
 
 from app.games import bp
 from app import db
-from app.models import CurrentGame, Word, Dictionary
+from app.models import CurrentGame, Word, Dictionary, Statistic
 from appmodel.game_generator import GameGenerator
-from appmodel.game_round import GameRound
 from appmodel.game_type import GameType
-from appmodel.revision_game import RevisionGame
+
 
 
 @bp.route('/define', methods=['GET'])
@@ -57,7 +56,14 @@ def game_statistic():
     revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=True).first()
     total_rounds = revision_game_entry.total_rounds
     correct_answers = revision_game_entry.correct_answers
-    # TODO update statistic table
+
+    # Update statistic table
+    statistic_entry = Statistic(user_id=current_user.id)
+    statistic_entry.game_type = revision_game_entry.game_type
+    statistic_entry.total_rounds = total_rounds
+    statistic_entry.correct_answers = correct_answers
+
+    db.session.add(statistic_entry)
     db.session.delete(revision_game_entry)
     db.session.commit()
 
