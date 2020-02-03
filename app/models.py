@@ -120,19 +120,19 @@ class CurrentGame(db.Model):
 
     def get_correct_index(self, answer_index: int) -> int:
         current_round = self.get_current_round()
+        learning_index = LearningIndex.query.filter_by(id=current_round['learning_index_id']).first()
+        if learning_index is None:
+            learning_index = LearningIndex(word_id=current_round['word_id'], index=0)
+            db.session.add(learning_index)
+            db.session.commit()
+
         if int(current_round['correct_index']) == int(answer_index):
             self.correct_answers += 1
-            learning_index = LearningIndex.query.filter_by(id=current_round['learning_index_id']).first()
-            if learning_index is None:
-                learning_index = LearningIndex(word_id=current_round['word_id'], index=0)
-                db.session.add(learning_index)
-                db.session.commit()
             learning_index.index += 10
-            db.session.commit()
         else:
+            learning_index.index -= 10 if learning_index.index > 10 else 0
 
-            pass
-
+        db.session.commit()
         return int(current_round['correct_index'])
 
     def get_current_round(self):
