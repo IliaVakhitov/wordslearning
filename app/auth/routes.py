@@ -3,10 +3,11 @@ from flask import flash
 from flask import redirect
 from flask import url_for
 from flask import request
+from sqlalchemy import func
 from werkzeug.urls import url_parse
 from flask_login import current_user, login_user, logout_user, login_required
 from app import db
-from app.models import User
+from app.models import User, Dictionary, Word, LearningIndex
 from app.auth import bp
 from app.auth.forms import LoginForm, RegistrationForm
 
@@ -64,4 +65,25 @@ def register():
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    return render_template('auth/user.html', user=user)
+    dictionaries = Dictionary.query.filter_by(user_id=current_user.id).all()
+    dict_ids = [d.id for d in dictionaries]
+    words = Word.query.filter(Word.dictionary_id.in_(dict_ids)).all()
+    total_words = len(words)
+    words_ids = [w.id for w in words]
+    words_learnt = LearningIndex.query.filter(LearningIndex.word_id.in_(words_ids)).filter_by(index=100).count()
+    total_dictionaries = len(dictionaries)
+    # TODO get progress as a sum from all words, then divide on number of words
+    # sub_query = db.session.query(func.sum(LearningIndex.index).label("index_progress"))
+    # index_progress = sub_query.group_by().all().index_progress
+    # not sql solution
+    learning_index_list = LearningIndex.query.filter(LearningIndex.word_id.in_(words_ids)).all()
+    index_progress = 0
+    for li_entry in learning_index_list:
+        index_progress += li_entry.index
+    progress = round(index_progress / total_words, 2)
+    return render_template('auth/user.html',
+                           user=user,
+                           total_dictionaries=total_dictionaries,
+                           total_words=total_words,
+                           words_learnt=words_learnt,
+                           progress=progress)
