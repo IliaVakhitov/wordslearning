@@ -29,7 +29,8 @@ function add_word(word_id) {
     input_value = document.createElement('input');
     input_value.setAttribute('id', 'word_spelling_'.concat(word_id));
     input_value.setAttribute('value', new_word_spelling.value);
-    input_value.setAttribute('size', 25);
+    //input_value.setAttribute('size', 25);
+    input_value.setAttribute('class', 'form-control form-control-sm');
     input_value.setAttribute('required', '');
     input_value.setAttribute('placeholder', 'Enter word or phrase');
     input_value.setAttribute('onchange', 'save_word(word_id)'.replace('word_id', word_id));
@@ -38,7 +39,8 @@ function add_word(word_id) {
     input_definition = document.createElement('input');
     input_definition.setAttribute('id', 'word_definition_'.concat(word_id));
     input_definition.setAttribute('value', new_word_definition.value);
-    input_definition.setAttribute('size', 35);
+    //input_definition.setAttribute('size', 35);
+    input_definition.setAttribute('class', 'form-control form-control-sm');
     input_definition.setAttribute('required', '');
     input_definition.setAttribute('placeholder', 'Enter definition');
     input_definition.setAttribute('onchange', 'save_word(word_id)'.replace('word_id', word_id));
@@ -47,7 +49,7 @@ function add_word(word_id) {
     button_delete = document.createElement('button');
     button_delete.setAttribute('id', 'button_delete_'.concat(word_id));
     button_delete.appendChild(document.createTextNode('X'));
-    button_delete.setAttribute('class', 'btn btn-danger');
+    button_delete.setAttribute('class', 'btn btn-outline-danger btn-sm');
     button_delete.setAttribute('onclick', 'delete_word(word_id);'.replace('word_id', word_id))
     td_button_delete.appendChild(button_delete);
 
@@ -67,9 +69,6 @@ function delete_word(word_id) {
         {word_id: word_id}
     ).done(function(response) {
         document.getElementById('word_'.concat(word_id)).remove();
-    }).fail(function() {
-        // TODO
-        alert('Bad');
     });
 }
 
@@ -93,9 +92,6 @@ function add_new_word() {
         dictionary_id: dictionary_id
     }).done(function(response) {
         add_word(response['new_word_id'])
-    }).fail(function() {
-        // TODO
-        alert('Bad');
     });
 }
 
@@ -109,9 +105,6 @@ function save_word(word_id) {
         word_id: word_id
     }).done(function(response) {
 
-    }).fail(function() {
-        // TODO
-        alert('Bad');
     });
 
 }

@@ -25,10 +25,11 @@
             </table>
         </form>
     </div>
-
     {% for dictionary in dictionaries %}
+    {# TODO make cards #}
         <p><a href="{{ url_for('main.dictionary', dictionary_id=dictionary.id) }}"
-               class="btn btn-outline-dark btn-sm">{{ dictionary.dictionary_name }}</a></p>
+              class="btn btn-outline-dark btn-sm">{{ dictionary.dictionary_name }}</a></p>
     {% endfor %}
+
 
 {% endblock %}
