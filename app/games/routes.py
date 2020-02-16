@@ -48,6 +48,7 @@ def define_game():
 
         dictionaries = Dictionary.query.filter_by(user_id=current_user.id).all()
         dict_ids = [d.id for d in dictionaries]
+        # TODO select unlearnt words
         words_query = Word.query. \
             filter(Word.dictionary_id.in_(dict_ids)). \
             order_by(func.random()). \

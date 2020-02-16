@@ -108,8 +108,6 @@ class CurrentGame(db.Model):
             True - game completed (previous was last round)
             False - game could be resumed
         """
-        self.current_round += 1
-        db.session.commit()
         if self.total_rounds == self.current_round:
             self.game_completed = True
             self.game_date_completed = datetime.utcnow()
@@ -131,7 +129,8 @@ class CurrentGame(db.Model):
             learning_index.index += 10
         else:
             learning_index.index -= 10 if learning_index.index > 10 else 0
-
+            
+        self.current_round += 1
         db.session.commit()
         return int(current_round['correct_index'])
 
