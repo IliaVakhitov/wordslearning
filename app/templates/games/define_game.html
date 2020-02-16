@@ -15,10 +15,11 @@
         <h5>Found uncompleted game</h5>
         Information about game
         <br>
-        <a href="{{ url_for('games.play_game', game_parameter='Continue') }}"
-           name="continue_previous_game" class="btn btn-outline-dark btn-sm">Resume</a>
-        <a href="{{ url_for('games.play_game', game_parameter='Remove') }}"
-           name="continue_previous_game" class="btn btn-outline-danger btn-sm">Remove</a>
+        <form id="previous_game" action="" method="post" role="form" class="form">
+            {{ form.hidden_tag() }}
+            <input type="submit" name="resume" class="btn btn-outline-dark btn-sm" id="resume" value="Resume">
+            <input type="submit" name="remove" class="btn btn-outline-danger btn-sm" id="remove" value="Remove">
+        </form>
         {% endif %}
     </div>
     <br>
@@ -35,10 +36,10 @@
                     <td>
                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn btn-secondary active">
-                                <input type="radio" class="form-check-input" name="optradio" id="FindDefinition" checked>Find definition
+                                <input type="radio" class="form-check-input" name="game_type" value="FindDefinition" checked>Find definition
                             </label>
                             <label class="btn btn-secondary">
-                                <input type="radio" class="form-check-input" name="optradio" id="FindSpelling">Find spelling
+                                <input type="radio" class="form-check-input" name="game_type" value="FindSpelling">Find spelling
                             </label>
                         </div>
                     </td>
@@ -50,7 +51,7 @@
                 <tr>
                     <td>Dictionaries:</td>
                     <td>
-                        <select class="selectpicker" multiple id="select_dictionaries">
+                        <select class="selectpicker" multiple id="select_dictionaries" name="select_dictionaries">
                         {% for dictionary in dictionaries %}
                             <option>{{ dictionary.dictionary_name }}</option>
                         {% endfor %}

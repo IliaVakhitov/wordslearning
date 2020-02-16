@@ -15,12 +15,60 @@ from appmodel.game_generator import GameGenerator
 from appmodel.game_type import GameType
 
 
-@bp.route('/define', methods=['GET','POST'])
+@bp.route('/define_game', methods=['GET', 'POST'])
 @login_required
-def define():
+def define_game():
+    game_form = GameParametersForm()
     revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
     dictionaries = Dictionary.query.filter_by(user_id=current_user.id).order_by('dictionary_name')
-    game_form = GameParametersForm()
+
+    if 'resume' in request.form:
+        if revision_game_entry is not None and revision_game_entry.game_completed:
+            return redirect(url_for('games.game_statistic'))
+        return redirect(url_for('games.play_game'))
+
+    if 'remove' in request.form:
+        if revision_game_entry is not None:
+            db.session.delete(revision_game_entry)
+            db.session.commit()
+        return redirect(url_for('games.define_game'))
+
+    if game_form.validate_on_submit():
+        # Remove previous game
+        if revision_game_entry is not None:
+            db.session.delete(revision_game_entry)
+            db.session.commit()
+
+        game_type = GameType[request.form['game_type'].strip()]
+        word_limit = int(request.form['game_rounds'].strip())
+        #dictionaries_ids = request.form['select_dictionaries'].strip()
+        print(game_type)
+        print(word_limit)
+        #print(dictionaries_ids)
+
+        dictionaries = Dictionary.query.filter_by(user_id=current_user.id).all()
+        dict_ids = [d.id for d in dictionaries]
+        words_query = Word.query. \
+            filter(Word.dictionary_id.in_(dict_ids)). \
+            order_by(func.random()). \
+            limit(word_limit).all()
+        revision_game = GameGenerator.generate_game(words_query, game_type, word_limit)
+        if revision_game is None:
+            logger.info('Could not create game!')
+            flash('Could not create game!')
+            return redirect(url_for('games.define_game'))
+
+        revision_game_entry = CurrentGame()
+        revision_game_entry.game_type = game_type.name
+        revision_game_entry.game_data = json.dumps(revision_game.to_json())
+        revision_game_entry.user_id = current_user.id
+        revision_game_entry.total_rounds = revision_game.total_rounds
+        revision_game_entry.current_round = 0
+        db.session.add(revision_game_entry)
+        db.session.commit()
+
+        return redirect(url_for('games.play_game'))
+
     show_previous_game = (revision_game_entry is not None
                           and not revision_game_entry.game_completed
                           and revision_game_entry.total_rounds > revision_game_entry.current_round)
@@ -78,73 +126,11 @@ def game_statistic():
                            correct_answers=correct_answers)
 
 
-@bp.route('/play/<game_parameter>', methods=['GET'])
+@bp.route('/play_game/', methods=['GET'])
 @login_required
-def play_game(game_parameter):
-    """
-    param game_parameter:
-        Continue - resume previous game
-        FindDefinition - start new game
-        FindSpelling - start new game
-
-    """
-    # TODO split function in several
-    if request.method == 'GET':
-        game_type = GameType.FindDefinition
-        revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
-
-        revision_game = None
-        game_rounds = []
-        new_game = False
-        if game_parameter == 'Continue':
-            if revision_game_entry is not None and revision_game_entry.game_completed:
-                return redirect(url_for('games.game_statistic'))
-            game_type = GameType[revision_game_entry.game_type]
-        elif game_parameter == 'Remove':
-            if revision_game_entry is not None:
-                db.session.delete(revision_game_entry)
-                db.session.commit()
-            return redirect(url_for('games.define'))
-
-        elif game_parameter == 'FindDefinition':
-            game_type = GameType[game_parameter]
-            new_game = True
-        elif game_parameter == 'FindSpelling':
-            game_type = GameType[game_parameter]
-            new_game = True
-        elif game_parameter == 'End_Game':
-            return redirect(url_for('games.game_statistic'))
-
-        if new_game:
-            if revision_game_entry is not None:
-                db.session.delete(revision_game_entry)
-                db.session.commit()
-            # TODO get a game parameter
-            word_limit = 5
-            dictionaries = Dictionary.query.filter_by(user_id=current_user.id).all()
-            dict_ids = [d.id for d in dictionaries]
-            words_query = Word.query.\
-                filter(Word.dictionary_id.in_(dict_ids)).\
-                order_by(func.random()).\
-                limit(word_limit).all()
-            revision_game = GameGenerator.generate_game(words_query, game_type, word_limit)
-            if revision_game is None:
-                logger.info('Could not create game!')
-                flash('Could not create game!')
-                return redirect(url_for('games.define'))
-
-            revision_game_entry = CurrentGame()
-            revision_game_entry.game_type = game_type.name
-            revision_game_entry.game_data = json.dumps(revision_game.to_json())
-            revision_game_entry.user_id = current_user.id
-            revision_game_entry.total_rounds = revision_game.total_rounds
-            revision_game_entry.current_round = 0
-            db.session.add(revision_game_entry)
-            db.session.commit()
-
-        return render_template('games/play_game.html',
-                               title='Revision Game',
-                               game_type=game_type)
+def play_game():
+    return render_template('games/play_game.html',
+                               title='Revision Game')
 
 
 logger = logging.getLogger(__name__)
