@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 
+{% block app_script %}
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='define_game.js') }}"></script>
+{% endblock %}
+
 {% block app_content %}
 
     <h1>Games page</h1>
@@ -20,14 +27,45 @@
     <i>Previous game will be replaced</i>
     {% endif %}
     <div>
-        <a href="{{ url_for('games.play_game', game_parameter='FindDefinition') }}"
-            name="find_definition" class="btn btn-outline-dark btn-sm">Find definition</a>
-    </div>
-    <br>
-    <div>
-        <a href="{{ url_for('games.play_game', game_parameter='FindSpelling') }}" method
-            name="find_spelling" class="btn btn-outline-dark btn-sm">Find spelling
-        </a>
+        <form id="game_parameters" action="" method="post" role="form" class="form">
+            {{ form.hidden_tag() }}
+            <table class="table table-borderless">
+                <tr>
+                    <td>Game type:</td>
+                    <td>
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-secondary active">
+                                <input type="radio" class="form-check-input" name="optradio" id="FindDefinition" checked>Find definition
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" class="form-check-input" name="optradio" id="FindSpelling">Find spelling
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Game rounds:</td>
+                    <td><input class="form-control form-control-sm" name="game_rounds" id="game_rounds" value="10"></td>
+                </tr>
+                <tr>
+                    <td>Dictionaries:</td>
+                    <td>
+                        <select class="selectpicker" multiple id="select_dictionaries">
+                        {% for dictionary in dictionaries %}
+                            <option>{{ dictionary.dictionary_name }}</option>
+                        {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <input id="start_game"
+                       name="start_game"
+                       type="submit"
+                       value="Start"
+                       class="btn btn-outline-dark btn-sm"
+                       onclick="">
+
+        </form>
     </div>
 
 {% endblock %}

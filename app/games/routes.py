@@ -9,21 +9,27 @@ from sqlalchemy import func
 
 from app.games import bp
 from app import db
+from app.games.forms import GameParametersForm
 from app.models import CurrentGame, Word, Dictionary, Statistic
 from appmodel.game_generator import GameGenerator
 from appmodel.game_type import GameType
 
 
-
-@bp.route('/define', methods=['GET'])
+@bp.route('/define', methods=['GET','POST'])
 @login_required
 def define():
     revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
+    dictionaries = Dictionary.query.filter_by(user_id=current_user.id).order_by('dictionary_name')
+    game_form = GameParametersForm()
     show_previous_game = (revision_game_entry is not None
                           and not revision_game_entry.game_completed
                           and revision_game_entry.total_rounds > revision_game_entry.current_round)
 
-    return render_template('games/define_game.html', title='Games', show_previous_game=show_previous_game)
+    return render_template('games/define_game.html',
+                           title='Games',
+                           show_previous_game=show_previous_game,
+                           dictionaries=dictionaries,
+                           form=game_form)
 
 
 @bp.route('/next_round', methods=['POST'])
