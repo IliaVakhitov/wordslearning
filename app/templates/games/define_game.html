@@ -51,9 +51,9 @@
                 <tr>
                     <td>Dictionaries:</td>
                     <td>
-                        <select class="selectpicker" multiple id="select_dictionaries" name="select_dictionaries">
+                        <select class="selectpicker form-control" multiple id="select_dictionaries" name="select_dictionaries">
                         {% for dictionary in dictionaries %}
-                            <option>{{ dictionary.dictionary_name }}</option>
+                            <option data-tokens="{{ dictionary.id }}">{{ dictionary.dictionary_name }}</option>
                         {% endfor %}
                         </select>
                     </td>

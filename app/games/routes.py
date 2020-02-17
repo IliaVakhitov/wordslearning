@@ -41,12 +41,13 @@ def define_game():
 
         game_type = GameType[request.form['game_type'].strip()]
         word_limit = int(request.form['game_rounds'].strip())
-        #dictionaries_ids = request.form['select_dictionaries'].strip()
-        print(game_type)
-        print(word_limit)
-        #print(dictionaries_ids)
+        if 'select_dictionaries' in request.form:
+            dict_names = request.form.getlist('select_dictionaries')
+            dictionaries = Dictionary.query.\
+                filter_by(user_id=current_user.id).\
+                filter(Dictionary.dictionary_name.in_(dict_names)).\
+                order_by('dictionary_name')
 
-        dictionaries = Dictionary.query.filter_by(user_id=current_user.id).all()
         dict_ids = [d.id for d in dictionaries]
         # TODO select unlearnt words
         words_query = Word.query. \
