@@ -64,7 +64,6 @@ function add_word(word_id) {
 }
 
 function delete_word(word_id) {
-
     $.post('/delete_word',
         {word_id: word_id}
     ).done(function(response) {
@@ -106,5 +105,4 @@ function save_word(word_id) {
     }).done(function(response) {
 
     });
-
 }

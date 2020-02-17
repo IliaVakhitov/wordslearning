@@ -211,6 +211,22 @@ class WordModelCase(unittest.TestCase):
         # Assert
         self.assertEqual(response.status_code, 200)
 
+    def test_dictionaries(self):
+        # Arrange
+        user = User.query.filter_by(username='Test').first()
+        user_dictionary = Dictionary(dictionary_name='new_dictionary', user_id=user.id)
+        db.session.add(user_dictionary)
+        db.session.commit()
+        # Act
+        response = self.app_client.post('/check_dictionary_name', data=dict(dictionary_name='new_dictionary'))
+        # Assert
+        res = json.loads(response.data)
+        self.assertFalse(res['name_available'])
+        # Act
+        response = self.app_client.post('/check_dictionary_name', data=dict(dictionary_name='new_dictionary name'))
+        res = json.loads(response.data)
+        self.assertTrue(res['name_available'])
+
     def login_test_user(self, username, password):
         return self.app_client.post('/login', data=dict(
             username=username,

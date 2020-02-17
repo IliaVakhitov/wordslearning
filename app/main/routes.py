@@ -28,19 +28,20 @@ def index():
 @bp.route('/dictionaries', methods=['GET', 'POST'])
 @login_required
 def dictionaries():
-    dictionary_form = EditDictionaryForm('', '')
-    if dictionary_form.validate_on_submit():
-        dictionary_entry = Dictionary(
-            dictionary_name=dictionary_form.dictionary_name.data.strip(),
-            description=dictionary_form.description.data.strip(),
-            user_id=current_user.id)
-        db.session.add(dictionary_entry)
-        db.session.commit()
-        # TODO add logging
-        logger.info(f'Dictionary {dictionary_entry.dictionary_name} saved')
-        return redirect(url_for('main.edit_dictionary', dictionary_id=dictionary_entry.id))
-        # flash('Dictionary saved!')
+    if request.method == 'POST':
+        dictionary_form = EditDictionaryForm(request.form['dictionary_name'], '')
+        if dictionary_form.validate_on_submit():
+            dictionary_entry = Dictionary(
+                dictionary_name=dictionary_form.dictionary_name.data.strip(),
+                description=dictionary_form.description.data.strip(),
+                user_id=current_user.id)
+            db.session.add(dictionary_entry)
+            db.session.commit()
+            # TODO add logging
+            logger.info(f'Dictionary {dictionary_entry.dictionary_name} saved')
+            return redirect(url_for('main.edit_dictionary', dictionary_id=dictionary_entry.id))
 
+    dictionary_form = EditDictionaryForm('', '')
     dictionaries = Dictionary.query.filter_by(user_id=current_user.id).order_by('dictionary_name')
     return render_template('main/dictionaries.html',
                            title='Dictionaries',
@@ -67,7 +68,7 @@ def edit_dictionary(dictionary_id):
         db.session.delete(dictionary_entry)
         db.session.commit()
         return redirect(url_for('main.dictionaries'))
-
+    # TODO check name before saving
     if dictionary_form.validate_on_submit():
         if 'save_dictionary' in request.form:
             dictionary_entry.dictionary_name = dictionary_form.dictionary_name.data.strip()
