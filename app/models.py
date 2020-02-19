@@ -126,7 +126,7 @@ class CurrentGame(db.Model):
 
         if int(current_round['correct_index']) == int(answer_index):
             self.correct_answers += 1
-            learning_index.index += 10 if learning_index.index < 90 else 0
+            learning_index.index += 10 if learning_index.index <= 90 else 0
         else:
             learning_index.index -= 10 if learning_index.index > 10 else 0
             

@@ -10,7 +10,7 @@ from sqlalchemy import func
 from app.games import bp
 from app import db
 from app.games.forms import GameParametersForm
-from app.models import CurrentGame, Word, Dictionary, Statistic
+from app.models import CurrentGame, Word, Dictionary, Statistic, LearningIndex
 from appmodel.game_generator import GameGenerator
 from appmodel.game_type import GameType
 
@@ -23,6 +23,7 @@ def define_game():
     dictionaries = Dictionary.query.filter_by(user_id=current_user.id).order_by('dictionary_name')
 
     if 'resume' in request.form:
+        # If game completed
         if revision_game_entry is not None and revision_game_entry.game_completed:
             return redirect(url_for('games.game_statistic'))
         return redirect(url_for('games.play_game'))
@@ -39,8 +40,12 @@ def define_game():
             db.session.delete(revision_game_entry)
             db.session.commit()
 
+        # Game parameters from page
         game_type = GameType[request.form['game_type'].strip()]
         word_limit = int(request.form['game_rounds'].strip())
+        not_include_learned_words = (request.form['include_learned_words'].strip() == "False")
+
+        # In need to filter dictionaries
         if 'select_dictionaries' in request.form:
             dict_names = request.form.getlist('select_dictionaries')
             dictionaries = Dictionary.query.\
@@ -48,18 +53,26 @@ def define_game():
                 filter(Dictionary.dictionary_name.in_(dict_names)).\
                 order_by('dictionary_name')
 
+        # IDs need to make filter in words query
         dict_ids = [d.id for d in dictionaries]
-        # TODO select unlearned words
-        words_query = Word.query. \
-            filter(Word.dictionary_id.in_(dict_ids)). \
-            order_by(func.random()). \
-            limit(word_limit).all()
-        revision_game = GameGenerator.generate_game(words_query, game_type, word_limit)
+        words_query = db.session.query(Word).filter(Word.dictionary_id.in_(dict_ids))
+
+        if not_include_learned_words:
+            words_query = words_query.\
+                join(LearningIndex, LearningIndex.word_id == Word.id).\
+                filter(LearningIndex.index < 100)
+
+        # Getting random order and limit is defined
+        words_query = words_query.order_by(func.random()).limit(word_limit).all()
+
+        # Generate game from given list of words
+        revision_game = GameGenerator.generate_game(words_query, game_type)
         if revision_game is None:
             logger.info('Could not create game!')
-            flash('Could not create game!')
+            flash('Could not create game! Not enough words to create game! Try to add dictionaries!')
             return redirect(url_for('games.define_game'))
 
+        # Entry of current game to continue if not finished
         revision_game_entry = CurrentGame()
         revision_game_entry.game_type = game_type.name
         revision_game_entry.game_data = json.dumps(revision_game.to_json())
@@ -71,9 +84,7 @@ def define_game():
 
         return redirect(url_for('games.play_game'))
 
-    show_previous_game = (revision_game_entry is not None
-                          and not revision_game_entry.game_completed
-                          and revision_game_entry.total_rounds > revision_game_entry.current_round)
+    show_previous_game = (revision_game_entry is not None and not revision_game_entry.game_completed)
 
     return render_template('games/define_game.html',
                            title='Games',
