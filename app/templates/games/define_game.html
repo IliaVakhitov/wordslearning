@@ -17,8 +17,8 @@
         <br>
         <form id="previous_game" action="" method="post" role="form" class="form">
             {{ form.hidden_tag() }}
-            <input type="submit" name="resume" class="btn btn-outline-dark btn-sm" id="resume" value="Resume">
-            <input type="submit" name="remove" class="btn btn-outline-danger btn-sm" id="remove" value="Remove">
+            <input type="submit" name="resume" class="btn btn-outline-dark btn" id="resume" value="Resume">
+            <input type="submit" name="remove" class="btn btn-outline-danger btn" id="remove" value="Remove">
         </form>
         {% endif %}
     </div>
@@ -46,7 +46,21 @@
                 </tr>
                 <tr>
                     <td>Game rounds:</td>
-                    <td><input class="form-control form-control-sm" name="game_rounds" id="game_rounds" value="10"></td>
+                    <td>
+                        <input class="form-control col-lg-2" name="game_rounds" id="game_rounds" value="10" style="width:15">
+                    </td>
+                </tr>
+                <tr><td>Include learned words:</td>
+                    <td>
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-secondary active">
+                                <input type="radio" class="form-check-input" name="include_learned_words_radio" value="True" checked>Yes
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="radio" class="form-check-input" name="include_learned_words_radio" value="False">No
+                            </label>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <td>Dictionaries:</td>
@@ -67,7 +81,7 @@
                        name="start_game"
                        type="submit"
                        value="Start"
-                       class="btn btn-outline-dark btn-sm"
+                       class="btn btn-outline-dark btn"
                        onclick="">
 
         </form>

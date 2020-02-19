@@ -70,7 +70,7 @@ def user(username):
     words = Word.query.filter(Word.dictionary_id.in_(dict_ids)).all()
     total_words = len(words)
     words_ids = [w.id for w in words]
-    words_learnt = LearningIndex.query.filter(LearningIndex.word_id.in_(words_ids)).filter_by(index=100).count()
+    words_learned = LearningIndex.query.filter(LearningIndex.word_id.in_(words_ids)).filter_by(index=100).count()
     total_dictionaries = len(dictionaries)
     # TODO get progress as a sum from all words, then divide on number of words
     # sub_query = db.session.query(func.sum(LearningIndex.index).label("index_progress"))
@@ -85,5 +85,5 @@ def user(username):
                            user=user,
                            total_dictionaries=total_dictionaries,
                            total_words=total_words,
-                           words_learnt=words_learnt,
+                           words_learned=words_learned,
                            progress=progress)

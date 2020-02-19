@@ -3,7 +3,7 @@
 {% block app_content %}
 
     <a href="{{ url_for('main.dictionary', dictionary_id=word.dictionary_id) }}"
-        class="btn btn-outline-dark btn-sm">Back</a>
+        class="btn btn-outline-dark btn">Back</a>
 
     <h3>{{ word.spelling }}</h3>
     {{ word.definition }}

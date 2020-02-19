@@ -16,20 +16,25 @@
                 <input type="button"
                        name="answer"
                        id="{{ 'answer{}'.format(i) }}"
-                       class="btn btn-outline-dark btn-sm"
+                       class="btn btn-outline-dark btn"
                        style="width:100%"
                        onclick="{{ 'check_answer({})'.format(i) }}"
                        value="{{ 'answer{}'.format(i) }}" size="25">
             </td>
         </tr>
         {% endfor %}
+        <tr>
+            <td>
+                <div align="right">
+                    <br><button id="button_next"
+                                name="button_next"
+                                onclick="next_round();"
+                                value="Next"
+                                class="btn btn-outline-dark btn">Next</button>
+                </div>
+            </td>
+        </tr>
     </table>
-    <div>
-        <br><button id="button_next"
-                    name="button_next"
-                    onclick="next_round();"
-                    value="Next"
-                    class="btn btn-outline-dark btn-sm">Next</button>
-    </div>
+
 
 {% endblock %}

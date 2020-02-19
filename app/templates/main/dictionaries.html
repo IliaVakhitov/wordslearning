@@ -6,14 +6,14 @@
 
 {% block app_content %}
     <h1>Dictionaries</h1>
-    <p><button id="btn_edit" class="btn btn-outline-info btn-sm" onclick="showFunction();">Add new</button></p>
+    <p><button id="btn_edit" class="btn btn-outline-info btn" onclick="showFunction();">Add new</button></p>
     <div id="edit_block" style="display:none" class="collapse">
         <form class="form" action="" method="post" role="form" id="new_dictionary">
             {{ form.hidden_tag() }}
             <table>
                 <tr>
                     <td>
-                        <input class="form-control form-control-sm"
+                        <input class="form-control form-control"
                                id="dictionary_name"
                                name="dictionary_name"
                                required=""
@@ -27,15 +27,15 @@
                                onclick="check_new_dictionary_name();"
                                type="button"
                                value="Save"
-                               class="btn btn-outline-success btn-sm">
+                               class="btn btn-outline-success btn">
                     </td>
                     <td>
-                        <input id="btn_cancel" name="cancel" type="button" value="Cancel" class="btn btn-outline-dark btn-sm" onclick="showFunction();">
+                        <input id="btn_cancel" name="cancel" type="button" value="Cancel" class="btn btn-outline-dark btn" onclick="showFunction();">
                     </td>
                 </tr>
             </table>
         </form>
-        <div style="display:none" id="err_message" class="col-sm-3">
+        <div style="display:none" id="err_message" class="col-3">
             <small class="text-danger">
               Please, select different name!
             </small>
@@ -45,7 +45,7 @@
     {% for dictionary in dictionaries %}
     {# TODO make cards #}
         <p><a href="{{ url_for('main.dictionary', dictionary_id=dictionary.id) }}"
-              class="btn btn-outline-dark btn-sm">{{ dictionary.dictionary_name }}</a></p>
+              class="btn btn-outline-dark btn">{{ dictionary.dictionary_name }}</a></p>
     {% endfor %}
 
 

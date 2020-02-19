@@ -49,7 +49,7 @@ def define_game():
                 order_by('dictionary_name')
 
         dict_ids = [d.id for d in dictionaries]
-        # TODO select unlearnt words
+        # TODO select unlearned words
         words_query = Word.query. \
             filter(Word.dictionary_id.in_(dict_ids)). \
             order_by(func.random()). \
