@@ -19,6 +19,12 @@
                                required=""
                                type="text"
                                value=""
+                               data-container="body"
+                               data-toggle="popover"
+                               data-placement="left"
+                               data-content="Please, select different name!"
+                               data-trigger="manual"
+                               oninput="hide_popover();"
                                placeholder="New dictionary name">
                     </td>
                     <td>
@@ -35,11 +41,6 @@
                 </tr>
             </table>
         </form>
-        <div style="display:none" id="err_message" class="col-3">
-            <small class="text-danger">
-              Please, select different name!
-            </small>
-        </div>
         <br>
     </div>
     {% for dictionary in dictionaries %}

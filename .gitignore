@@ -137,10 +137,10 @@ dmypy.json
 .pydevproject
 
 # Bootstrap
-static/css/
+/app/static/css/
 # JS scripts for bootstrap
-static/js/
-
+/app/static/js/
 
 venv
 *.log*
+
