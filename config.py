@@ -14,3 +14,6 @@ class Config(object):
             db=os.environ.get('POSTGRES_DB')
         )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    WORDSAPI_KEY = os.environ.get('WORDSAPI_KEY')
+    WORDSAPI_HOST = os.environ.get('WORDSAPI_HOST')
+
