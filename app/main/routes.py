@@ -14,6 +14,7 @@ from app.models import Word
 from app.main import bp
 from app.main.forms import EditDictionaryForm
 from app import db
+from appmodel.words_api import WordsApi
 
 
 @bp.route('/')
@@ -97,6 +98,15 @@ def word(word_id):
     return render_template('main/word.html',
                            title=word_entry.spelling,
                            word=word_entry)
+
+
+@bp.route('/get_definition', methods=['POST'])
+def get_definition():
+    result = WordsApi.get_definitions(request.form['spelling'])
+    if not result:
+        return jsonify({'error': True})
+
+    return json.loads(result)
 
 
 @bp.route('/check_dictionary_name', methods=['POST'])

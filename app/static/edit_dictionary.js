@@ -71,18 +71,38 @@ function delete_word(word_id) {
     });
 }
 
+function get_definition(word_id) {
+    var spelling = document.getElementById('word_spelling_'.concat(word_id)).value.trim();
+    $.post('/get_definition',
+        {spelling: spelling}
+    ).done(function(response) {
+        if (response.hasOwnProperty('error')) {
+            return
+        }
+        // TODO make choice from given definitions
+        if (response.hasOwnProperty('definitions') && response.definitions.length > 0) {
+            result = response.definitions[0].definition;
+            result = result.charAt(0).toUpperCase() + result.slice(1);
+            document.getElementById('word_definition_'.concat(word_id)).value = result;
+            if (word_id != 0) {
+                save_word(word_id);
+            }
+        }
+    });
+}
+
 function add_new_word() {
-    var spelling = document.getElementById('new_word_spelling').value.trim();
-    var definition = document.getElementById('new_word_definition').value.trim();
+    var spelling = document.getElementById('word_spelling_0').value.trim();
+    var definition = document.getElementById('word_definition_0').value.trim();
     var dictionary_id = document.getElementById('dictionary_id').innerHTML;
-    document.getElementById('spelling_msg').innerHTML = "";
-    document.getElementById('definition_msg').innerHTML = "";
+    // TODO make popover document.getElementById('spelling_msg').innerHTML = "";
+    // TODO make popover document.getElementById('definition_msg').innerHTML = "";
     if (spelling == "") {
-        document.getElementById('spelling_msg').innerHTML = "Please fill out this field";
+        // TODO make popover document.getElementById('spelling_msg').innerHTML = "Please fill out this field";
         return;
     }
     if (definition == "") {
-        document.getElementById('definition_msg').innerHTML = "Please fill out this field";
+        // TODO make popover document.getElementById('definition_msg').innerHTML = "Please fill out this field";
         return;
     }
     $.post('/add_word', {
