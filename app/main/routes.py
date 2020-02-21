@@ -109,6 +109,7 @@ def get_definition():
     return json.loads(result)
 
 
+
 @bp.route('/check_dictionary_name', methods=['POST'])
 def check_dictionary_name():
     dictionary_name = request.form['dictionary_name']
@@ -131,6 +132,7 @@ def add_word():
 @bp.route('/delete_word', methods=['POST'])
 def delete_word():
     word_entry = Word.query.filter_by(id=request.form['word_id']).first_or_404()
+    db.session.delete(word_entry.learning_index)
     db.session.delete(word_entry)
     db.session.commit()
 
@@ -149,3 +151,4 @@ def save_word():
 
 logger = logging.getLogger(__name__)
 
+# TODO Save web api requests

@@ -90,34 +90,47 @@
             </div>
         {% endif %}
         <br>
-        <div id="new_word" style="width:90%; align:left">
+        <div id="new_word" style="align:left">
             <table class="table table-borderless" id="words_table">
                 <thead class="thead-light">
                     <tr>
-                        <th style="text-align:left;">Word or phrase</th>
-                        <th></th>
-                        <th style="text-align:left;">Definition</th>
+                        <th style="text-align:left;width:30%">Word or phrase</th>
+                        <th style="text-align:left;width:70%">Definition</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody id="words_table_body">
                     <tr>
                         <td>
-                            <input class="form-control form-control"
+                            <input class="form-control"
                                    id="word_spelling_0"
                                    value=""
                                    placeholder="Enter word or phrase">
                         </td>
                         <td>
-                            <button id="button_new_definition_new"
-                                    class="btn btn-outline-info btn"
-                                    onclick="get_definition(0);">Get definition</button>
-                        </td>
-                        <td>
-                            <input class="form-control form-control"
-                                   id="word_definition_0"
-                                   value=""
-                                   placeholder="Enter definition">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <button type="button"
+                                            id="button_get_definition_0"
+                                            class="btn btn-outline-success btn"
+                                            onclick="get_definition(0);">Get</button>
+                                    <button type="button"
+                                            class="btn btn-outline-secondary btn dropdown-toggle dropdown-toggle-split"
+                                            data-toggle="dropdown"
+                                            id="dropdown_button_0"
+                                            style="display:none"
+                                            aria-haspopup="true"
+                                            aria-expanded="true">
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <div class="dropdown-menu" id="dropdown_definitions_0">
+                                </div>
+                                </div>
+                                <input type="text"
+                                       id="word_definition_0"
+                                       placeholder="Enter definition"
+                                       class="form-control">
+                            </div>
                         </td>
                         <td>
                             <button id="add_button"
@@ -129,22 +142,37 @@
                     <tr id="word_{{ word.id }}">
                         <td>
                             <input id="word_spelling_{{ word.id }}"
-                                   class="form-control form-control"
+                                   class="form-control"
                                    value="{{ word.spelling }}"
                                    required=""
                                    onchange="save_word({{ word.id }});">
                         </td>
                         <td>
-                            <button id="button_get_definition_{{ word.id }}"
-                                    class="btn btn-outline-info btn"
-                                    onclick="get_definition({{ word.id }});">Get definition</button>
-                        </td>
-                        <td>
-                            <input id="word_definition_{{ word.id }}"
-                                   class="form-control form-control"
-                                   value="{{ word.definition }}"
-                                   required=""
-                                   onchange="save_word({{ word.id }});">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <button type="button"
+                                            id="button_get_definition_{{ word.id }}"
+                                            class="btn btn-outline-success btn"
+                                            onclick="get_definition({{ word.id }});">Get</button>
+                                    <button type="button"
+                                            class="btn btn-outline-secondary btn dropdown-toggle dropdown-toggle-split"
+                                            data-toggle="dropdown"
+                                            id="dropdown_button_{{ word.id }}"
+                                            style="display:none"
+                                            aria-haspopup="true"
+                                            aria-expanded="true">
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <div class="dropdown-menu" id="dropdown_definitions_{{ word.id }}">
+                                    </div>
+                                </div>
+                                <input type="text"
+                                       id="word_definition_{{ word.id }}"
+                                       placeholder="Enter definition"
+                                       value="{{ word.definition }}"
+                                       onchange="save_word({{ word.id }});"
+                                       class="form-control">
+                            </div>
                         </td>
                         <td>
                             <button id="button_delete_{{ word.id }}"

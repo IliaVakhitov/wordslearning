@@ -19,8 +19,8 @@ function show_confirmation() {
 
 function add_word(word_id) {
     var words_table = document.getElementById('words_table_body');
-    var new_word_spelling = document.getElementById('new_word_spelling');
-    var new_word_definition = document.getElementById('new_word_definition');
+    var new_word_spelling = document.getElementById('word_spelling_0');
+    var new_word_definition = document.getElementById('word_definition_0');
     var tr = document.createElement('tr');
     var td_spelling = document.createElement('td');
     var td_definition = document.createElement('td');
@@ -79,16 +79,36 @@ function get_definition(word_id) {
         if (response.hasOwnProperty('error')) {
             return
         }
-        // TODO make choice from given definitions
         if (response.hasOwnProperty('definitions') && response.definitions.length > 0) {
-            result = response.definitions[0].definition;
-            result = result.charAt(0).toUpperCase() + result.slice(1);
-            document.getElementById('word_definition_'.concat(word_id)).value = result;
+            document.getElementById('dropdown_button_'.concat(word_id)).style.display = "inline";
+            list = document.getElementById('dropdown_definitions_'.concat(word_id));
+            for (online_definition in response.definitions) {
+                result = response.definitions[online_definition].definition;
+                result = result.charAt(0).toUpperCase() + result.slice(1);
+
+                var link = document.createElement("a");
+                var text = document.createTextNode(result);
+                link.appendChild(text);
+                link.setAttribute('class', 'dropdown-item');
+                link.setAttribute('href', '#');
+                function_call = 'select_definition(word_id, text)'.replace('text', '\''+result+'\'');
+                function_call = function_call.replace('word_id', word_id)
+                link.setAttribute('onclick', function_call);
+                list.appendChild(link);
+
+            }
             if (word_id != 0) {
                 save_word(word_id);
             }
         }
     });
+}
+
+function select_definition(word_id, text) {
+    document.getElementById('word_definition_'.concat(word_id)).value = text;
+    if (word_id != 0) {
+        save_word(word_id);
+    }
 }
 
 function add_new_word() {
