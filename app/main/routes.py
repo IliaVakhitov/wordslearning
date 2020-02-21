@@ -144,6 +144,7 @@ def save_word():
     word_entry = Word.query.filter_by(id=request.form['word_id']).first_or_404()
     word_entry.spelling = request.form['spelling'].strip()
     word_entry.definition = request.form['definition'].strip()
+    word_entry.learning_index.index = 0
     db.session.commit()
 
     return jsonify({'success': True})
@@ -152,3 +153,4 @@ def save_word():
 logger = logging.getLogger(__name__)
 
 # TODO Save web api requests
+# TODO delete words and learning index when dictionary deleted

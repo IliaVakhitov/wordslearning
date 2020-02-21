@@ -109,7 +109,9 @@
                         </td>
                         <td>
                             <div class="input-group mb-3">
-                                <div class="input-group-prepend">
+                                <div class="input-group-prepend"
+                                     id="group_definition_0"
+                                     style="display:none">
                                     <button type="button"
                                             id="button_get_definition_0"
                                             class="btn btn-outline-success btn"
@@ -129,6 +131,7 @@
                                 <input type="text"
                                        id="word_definition_0"
                                        placeholder="Enter definition"
+                                       onfocus="show_get_buttons(0)"
                                        class="form-control">
                             </div>
                         </td>
@@ -149,7 +152,9 @@
                         </td>
                         <td>
                             <div class="input-group mb-3">
-                                <div class="input-group-prepend">
+                                <div class="input-group-prepend"
+                                     id="group_definition_{{ word.id }}"
+                                     style="display:none">
                                     <button type="button"
                                             id="button_get_definition_{{ word.id }}"
                                             class="btn btn-outline-success btn"
@@ -170,9 +175,10 @@
                                        id="word_definition_{{ word.id }}"
                                        placeholder="Enter definition"
                                        value="{{ word.definition }}"
+                                       onfocus="show_get_buttons({{ word.id }})"
                                        onchange="save_word({{ word.id }});"
                                        class="form-control">
-                            </div>
+                            </>
                         </td>
                         <td>
                             <button id="button_delete_{{ word.id }}"

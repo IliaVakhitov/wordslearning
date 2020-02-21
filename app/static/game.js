@@ -1,4 +1,4 @@
-
+// TODO add progress bar
 $(document).ready(function() {
     current_round();
 });

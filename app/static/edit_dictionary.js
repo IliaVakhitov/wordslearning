@@ -73,6 +73,7 @@ function delete_word(word_id) {
 
 function get_definition(word_id) {
     var spelling = document.getElementById('word_spelling_'.concat(word_id)).value.trim();
+    // TODO add spinner
     $.post('/get_definition',
         {spelling: spelling}
     ).done(function(response) {
@@ -95,13 +96,13 @@ function get_definition(word_id) {
                 function_call = function_call.replace('word_id', word_id)
                 link.setAttribute('onclick', function_call);
                 list.appendChild(link);
-
-            }
-            if (word_id != 0) {
-                save_word(word_id);
             }
         }
     });
+}
+
+function show_get_buttons(word_id, value) {
+    document.getElementById('group_definition_'.concat(word_id)).style.display = 'inline';
 }
 
 function select_definition(word_id, text) {
@@ -115,8 +116,6 @@ function add_new_word() {
     var spelling = document.getElementById('word_spelling_0').value.trim();
     var definition = document.getElementById('word_definition_0').value.trim();
     var dictionary_id = document.getElementById('dictionary_id').innerHTML;
-    // TODO make popover document.getElementById('spelling_msg').innerHTML = "";
-    // TODO make popover document.getElementById('definition_msg').innerHTML = "";
     if (spelling == "") {
         // TODO make popover document.getElementById('spelling_msg').innerHTML = "Please fill out this field";
         return;
@@ -143,6 +142,6 @@ function save_word(word_id) {
         definition: definition,
         word_id: word_id
     }).done(function(response) {
-
+        document.getElementById('group_definition_'.concat(word_id)).style.display = 'none';
     });
 }
