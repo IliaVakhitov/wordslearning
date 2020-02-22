@@ -114,7 +114,8 @@ def current_round():
 @login_required
 def get_correct_index():
     revision_game_entry = CurrentGame.query.filter_by(user_id=current_user.id, game_completed=False).first()
-    return jsonify({'correct_index': revision_game_entry.get_correct_index(request.form['answer_index'])})
+    return jsonify({'correct_index': revision_game_entry.get_correct_index(request.form['answer_index']),
+                   'progress': revision_game_entry.get_progress()})
 
 
 @bp.route('/game_statistic/', methods=['GET'])

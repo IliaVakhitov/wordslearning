@@ -7,7 +7,6 @@ from flask import request
 from flask import redirect
 from flask import flash
 from flask import jsonify
-from sqlalchemy import func
 
 from app.models import Dictionary, Definitions
 from app.models import Word

@@ -4,6 +4,7 @@ from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from app import login
+from flask import jsonify
 
 synonyms = db.Table(
     'synonyms',
@@ -124,6 +125,9 @@ class CurrentGame(db.Model):
             return True
 
         return False
+
+    def get_progress(self):
+        return int(self.current_round / self.total_rounds * 100)
 
     def get_correct_index(self, answer_index: int) -> int:
         current_round = self.get_current_round()
