@@ -9,7 +9,7 @@ from flask import flash
 from flask import jsonify
 from sqlalchemy import func
 
-from app.models import Dictionary
+from app.models import Dictionary, Definitions
 from app.models import Word
 from app.main import bp
 from app.main.forms import EditDictionaryForm
@@ -102,12 +102,28 @@ def word(word_id):
 
 @bp.route('/get_definition', methods=['POST'])
 def get_definition():
-    result = WordsApi.get_definitions(request.form['spelling'])
-    if not result:
+    # Check definitions table for current word
+    word_id = int(request.form['word_id'])
+    definitions = Definitions.query.filter_by(word_id=word_id).all()
+    if definitions:
+        result = {'definitions': []}
+        for definition_entry in definitions:
+            result['definitions'].append({'definition': definition_entry.definition})
+        return jsonify(result)
+
+    # Get definitions from online dictionary
+    result_query = WordsApi.get_definitions(request.form['spelling'])
+    if not result_query:
         return jsonify({'error': True})
 
-    return json.loads(result)
-
+    # Save definitions in table for future requests
+    result = json.loads(result_query)
+    if word_id > 0:
+        for definition in result['definitions']:
+            definition_entry = Definitions(word_id=word_id, definition=definition['definition'])
+            db.session.add(definition_entry)
+        db.session.commit()
+    return result
 
 
 @bp.route('/check_dictionary_name', methods=['POST'])

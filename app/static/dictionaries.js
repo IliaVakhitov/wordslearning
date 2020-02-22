@@ -14,6 +14,7 @@ function showFunction() {
 function hide_popover(){
     $('#dictionary_name').popover('hide');
 }
+
 function check_new_dictionary_name() {
     $.post('/check_dictionary_name', {dictionary_name: document.getElementById('dictionary_name').value}
     ).done(function(response) {

@@ -75,7 +75,8 @@ function get_definition(word_id) {
     var spelling = document.getElementById('word_spelling_'.concat(word_id)).value.trim();
     // TODO add spinner
     $.post('/get_definition',
-        {spelling: spelling}
+        {spelling: spelling,
+        word_id: word_id}
     ).done(function(response) {
         if (response.hasOwnProperty('error')) {
             return

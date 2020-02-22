@@ -21,6 +21,14 @@ class LearningIndex(db.Model):
     word = db.relationship('Word', back_populates='learning_index')
 
 
+class Definitions(db.Model):
+    __tablename__ = 'definitions'
+
+    id = db.Column(db.Integer, primary_key=True)
+    word_id = db.Column(db.Integer, db.ForeignKey('words.id'))
+    definition = db.Column(db.String(550))
+
+
 class Word(db.Model):
     __tablename__ = 'words'
 
@@ -29,6 +37,7 @@ class Word(db.Model):
     definition = db.Column(db.String(550))
     dictionary_id = db.Column(db.Integer, db.ForeignKey('dictionaries.id'))
     learning_index = db.relationship('LearningIndex', uselist=False, back_populates='word')
+    definitions = db.relationship('Definitions', backref='Word', lazy='dynamic', order_by="Definitions.id")
     words_synonyms = db.relationship(
         'Word', secondary=synonyms,
         primaryjoin=(synonyms.c.word_id == id),
