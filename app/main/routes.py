@@ -168,5 +168,5 @@ def save_word():
 
 logger = logging.getLogger(__name__)
 
-# TODO Save web api requests
 # TODO delete words and learning index when dictionary deleted
+

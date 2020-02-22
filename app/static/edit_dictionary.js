@@ -79,11 +79,15 @@ function get_definition(word_id) {
         word_id: word_id}
     ).done(function(response) {
         if (response.hasOwnProperty('error')) {
-            return
+            return;
         }
         if (response.hasOwnProperty('definitions') && response.definitions.length > 0) {
             document.getElementById('dropdown_button_'.concat(word_id)).style.display = "inline";
-            list = document.getElementById('dropdown_definitions_'.concat(word_id));
+            var list = document.getElementById('dropdown_definitions_'.concat(word_id));
+            var length = list.children.length;
+            for (i=length-1; i>-1; i--) {
+                list.removeChild(list.children[i]);
+            }
             for (online_definition in response.definitions) {
                 result = response.definitions[online_definition].definition;
                 result = result.charAt(0).toUpperCase() + result.slice(1);
@@ -93,7 +97,7 @@ function get_definition(word_id) {
                 link.appendChild(text);
                 link.setAttribute('class', 'dropdown-item');
                 link.setAttribute('href', '#');
-                function_call = 'select_definition(word_id, text)'.replace('text', '\''+result+'\'');
+                var function_call = 'select_definition(word_id, text)'.replace('text', '\''+result+'\'');
                 function_call = function_call.replace('word_id', word_id)
                 link.setAttribute('onclick', function_call);
                 list.appendChild(link);
