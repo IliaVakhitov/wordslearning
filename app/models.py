@@ -37,8 +37,8 @@ class Word(db.Model):
     spelling = db.Column(db.String(128))
     definition = db.Column(db.String(550))
     dictionary_id = db.Column(db.Integer, db.ForeignKey('dictionaries.id'))
-    learning_index = db.relationship('LearningIndex', uselist=False, back_populates='word')
-    definitions = db.relationship('Definitions', backref='Word', lazy='dynamic', order_by="Definitions.id")
+    learning_index = db.relationship('LearningIndex', cascade="all,delete", uselist=False, back_populates='word')
+    definitions = db.relationship('Definitions', cascade="all,delete", backref='Word', lazy='dynamic', order_by="Definitions.id")
     words_synonyms = db.relationship(
         'Word', secondary=synonyms,
         primaryjoin=(synonyms.c.word_id == id),
@@ -69,8 +69,8 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     secret_question = db.Column(db.String(128))
     secret_answer_hash = db.Column(db.String(128))
-    dictionaries = db.relationship('Dictionary', backref='Owner', lazy='dynamic', order_by="Dictionary.id")
-    current_game = db.relationship('CurrentGame', uselist=False, back_populates='user')
+    dictionaries = db.relationship('Dictionary', cascade="all,delete", backref='Owner', lazy='dynamic', order_by="Dictionary.id")
+    current_game = db.relationship('CurrentGame', cascade="all,delete", uselist=False, back_populates='user')
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -166,7 +166,7 @@ class Dictionary(db.Model):
     dictionary_name = db.Column(db.String(128))
     description = db.Column(db.String(250))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    words = db.relationship('Word', backref='Dictionary',  lazy='dynamic', order_by="Word.id")
+    words = db.relationship('Word', cascade="all,delete", backref='Dictionary',  lazy='dynamic', order_by="Word.id")
 
     def __repr__(self):
         return f'{self.dictionary_name}'
