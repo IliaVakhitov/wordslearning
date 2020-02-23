@@ -1,4 +1,4 @@
-// TODO add progress bar
+
 $(document).ready(function() {
     current_round();
 });
@@ -6,7 +6,7 @@ $(document).ready(function() {
 function update_progress(new_value) {
     var progress_bar = document.getElementById('progress_bar');
     var width = parseInt(progress_bar.getAttribute('aria-valuenow'));
-    var id = setInterval(frame, 50);
+    var id = setInterval(frame, 100);
     function frame() {
         if (width < new_value) {
             width++;

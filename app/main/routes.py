@@ -8,7 +8,7 @@ from flask import redirect
 from flask import flash
 from flask import jsonify
 
-from app.models import Dictionary, Definitions
+from app.models import Dictionary, Definitions, LearningIndex
 from app.models import Word
 from app.main import bp
 from app.main.forms import EditDictionaryForm
@@ -159,7 +159,11 @@ def save_word():
     word_entry = Word.query.filter_by(id=request.form['word_id']).first_or_404()
     word_entry.spelling = request.form['spelling'].strip()
     word_entry.definition = request.form['definition'].strip()
-    word_entry.learning_index.index = 0
+    if word_entry.learning_index is None:
+        learning_index = LearningIndex(word_id=word_entry.id, index=0)
+        db.session.add(learning_index)
+    else:
+        word_entry.learning_index.index = 0
     db.session.commit()
 
     return jsonify({'success': True})
