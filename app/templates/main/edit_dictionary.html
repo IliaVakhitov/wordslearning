@@ -105,6 +105,12 @@
                             <input class="form-control"
                                    id="word_spelling_0"
                                    value=""
+                                   data-container="body"
+                                   data-toggle="popover"
+                                   data-placement="top"
+                                   data-content="Please, select fill out this field!"
+                                   data-trigger="manual"
+                                   oninput="hide_popover(0);"
                                    placeholder="Enter word or phrase">
                         </td>
                         <td>
@@ -132,6 +138,12 @@
                                        id="word_definition_0"
                                        placeholder="Enter definition"
                                        onfocus="show_get_buttons(0)"
+                                       data-container="body"
+                                       data-toggle="popover"
+                                       data-placement="top"
+                                       data-content="Please, select fill out this field!"
+                                       data-trigger="manual"
+                                       oninput="hide_popover(0);"
                                        class="form-control">
                             </div>
                         </td>
@@ -148,6 +160,12 @@
                                    class="form-control"
                                    value="{{ word.spelling }}"
                                    required=""
+                                   data-container="body"
+                                   data-toggle="popover"
+                                   data-placement="top"
+                                   data-content="Please, select fill out this field!"
+                                   data-trigger="manual"
+                                   oninput="hide_popover({{ word.id }});"
                                    onchange="save_word({{ word.id }});">
                         </td>
                         <td>
@@ -177,8 +195,14 @@
                                        value="{{ word.definition }}"
                                        onfocus="show_get_buttons({{ word.id }})"
                                        onchange="save_word({{ word.id }});"
+                                       data-container="body"
+                                       data-toggle="popover"
+                                       data-placement="top"
+                                       data-content="Please, select fill out this field!"
+                                       data-trigger="manual"
+                                       oninput="hide_popover({{ word.id }});"
                                        class="form-control">
-                            </>
+                            </div>
                         </td>
                         <td>
                             <button id="button_delete_{{ word.id }}"

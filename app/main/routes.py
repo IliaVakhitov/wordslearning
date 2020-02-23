@@ -68,7 +68,7 @@ def edit_dictionary(dictionary_id):
         db.session.delete(dictionary_entry)
         db.session.commit()
         return redirect(url_for('main.dictionaries'))
-    # TODO check name before saving
+
     if dictionary_form.validate_on_submit():
         if 'save_dictionary' in request.form:
             dictionary_entry.dictionary_name = dictionary_form.dictionary_name.data.strip()
@@ -171,5 +171,4 @@ def save_word():
 
 logger = logging.getLogger(__name__)
 
-# TODO delete words and learning index when dictionary deleted
 

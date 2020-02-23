@@ -67,6 +67,7 @@ function delete_word(word_id) {
     $.post('/delete_word',
         {word_id: word_id}
     ).done(function(response) {
+        hide_popover(word_id);
         document.getElementById('word_'.concat(word_id)).remove();
     });
 }
@@ -122,11 +123,11 @@ function add_new_word() {
     var definition = document.getElementById('word_definition_0').value.trim();
     var dictionary_id = document.getElementById('dictionary_id').innerHTML;
     if (spelling == "") {
-        // TODO make popover document.getElementById('spelling_msg').innerHTML = "Please fill out this field";
+        $('#word_spelling_0').popover('show');
         return;
     }
     if (definition == "") {
-        // TODO make popover document.getElementById('definition_msg').innerHTML = "Please fill out this field";
+        $('#word_definition_0').popover('show');
         return;
     }
     $.post('/add_word', {
@@ -134,19 +135,35 @@ function add_new_word() {
         definition: definition,
         dictionary_id: dictionary_id
     }).done(function(response) {
-        add_word(response['new_word_id'])
+        add_word(response['new_word_id']);
+        hide_popover(0);
     });
 }
 
 function save_word(word_id) {
     var spelling = document.getElementById('word_spelling_'.concat(word_id)).value.trim();
     var definition = document.getElementById('word_definition_'.concat(word_id)).value.trim();
-
+    if (spelling == "") {
+        $('#word_spelling_'.concat(word_id)).popover('show');
+        return;
+    }
+    if (definition == "") {
+        $('#word_definition_'.concat(word_id)).popover('show');
+        return;
+    }
     $.post('/save_word', {
         spelling: spelling,
         definition: definition,
         word_id: word_id
     }).done(function(response) {
         document.getElementById('group_definition_'.concat(word_id)).style.display = 'none';
+        hide_popover(word_id);
     });
 }
+
+function hide_popover(word_id) {
+    $('#word_spelling_'.concat(word_id)).popover('hide');
+    $('#word_definition_'.concat(word_id)).popover('hide');
+}
+
+//TODO Add get buttons to new word
